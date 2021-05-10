@@ -47,6 +47,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 # TODOs
 
 [ ] yarn add styled-components
+[ ] Routing: https://reactrouter.com/web/guides/quick-start
 
 Below this is stock README
 ---
