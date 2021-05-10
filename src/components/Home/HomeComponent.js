@@ -1,9 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Store } from './Store';
+import logo from 'app/logo.svg';
+import { Store } from 'contexts/Store';
+import {
+  Link
+} from 'react-router-dom';
+import {
+  editProfileRoute
+} from 'app/routes';
 
-function App() {
+function HomeComponent() {
   const { state, dispatch } = React.useContext(Store);
   console.log(state);
 
@@ -14,17 +19,10 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Link to={editProfileRoute}>Route Test</Link>
       </header>
     </div>
   );
 }
 
-export default App;
+export default HomeComponent;

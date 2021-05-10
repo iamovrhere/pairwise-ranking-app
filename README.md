@@ -10,13 +10,15 @@ This is intended as a simple web app to aggregate a preference list from input (
 
 # Requirements
 
-* **Recommended:** Node 14
+* **Recommended:** Node 14 (via [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+* yarn - [Install yarn](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 
 # Setup
 
-This was bootstrapped using `yarn create react-app pairwise-ranking-app`.
+This was bootstrapped using `yarn create react-app pairwise-ranking-app`. See [Create React App](https://github.com/facebook/create-react-app).
 
-See [Create React App](https://github.com/facebook/create-react-app).
+1. yarn install
+1. Done
 
 ## Available Scripts
 
@@ -29,6 +31,23 @@ Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits. You will also see any lint errors in the console.
+
+####  Error: `System limit for number of file watchers reached`
+
+```bash
+Internal watch failed: ENOSPC: System limit for number of file watchers reached, watch '/media/rehan-sattar/Development/All projects/GrpahQl/graph-ql-course/graphql-prisma/src/generated
+```
+
+Sometimes happens on linux (in general) for Node scripts of this nature, Either:
+
+```bash
+sudo sysctl -w fs.inotify.max_user_watches=100000
+```
+
+Or edit `/etc/sysctl.d/10-user-watches.conf` with:
+```ini
+fs.inotify.max_user_watches = 100000
+```
 
 ### `yarn test`
 
@@ -47,7 +66,6 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 # TODOs
 
 [ ] yarn add styled-components
-[ ] Routing: https://reactrouter.com/web/guides/quick-start
 
 Below this is stock README
 ---

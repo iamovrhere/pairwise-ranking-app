@@ -8,12 +8,25 @@ const initialState = {
   profiles: []
 };
 
+/**
+ * React reducer action.
+ * @typedef {{
+ *  type: string, data: any
+ * }} Action
+ */
+
+/**
+ *
+ * @param {initialState} state
+ * @param {Action} action
+ * @return {initialState}
+ */
 function reducer(state, action) {
 
 }
 
 /**
- * @returns {{ state: initialState, dispatch: reducer }}
+ * @returns {{ state: initialState, dispatch: (Action) => {}}}
  */
 export function StoreProvider(props) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
