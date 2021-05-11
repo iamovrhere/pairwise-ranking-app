@@ -1,6 +1,5 @@
 import React from 'react';
-import logo from 'app/logo.svg';
-import { Store } from 'contexts/Store';
+import { PROFILE_ADD, ProfileContext } from 'contexts/Profile';
 import {
   Link
 } from 'react-router-dom';
@@ -9,19 +8,25 @@ import {
 } from 'app/routes';
 
 function HomeComponent() {
-  const { state, dispatch } = React.useContext(Store);
-  console.log(state);
+  const { state, dispatch } = React.useContext(ProfileContext);
+  const { profiles } = state;
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Link to={editProfileRoute}>Route Test</Link>
-      </header>
-    </div>
+    <header className="App-header">
+
+      {profiles.map((profile) => (
+        <div>{profile}</div>
+      ))}
+      <button onClick={() => dispatch({
+        type: PROFILE_ADD, data: 'foobar ' + new Date().toISOString()
+      })} >
+        New Profile
+      </button>
+      <p>
+        Edit <code>src/App.js</code> and save to reload.
+      </p>
+      <Link to={editProfileRoute}>Route Test</Link>
+    </header>
   );
 }
 

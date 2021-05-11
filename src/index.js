@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './app/App';
 import reportWebVitals from './app/reportWebVitals';
-import { StoreProvider } from './contexts/Store';
+import { ProfileProvider } from './contexts/Profile';
 
 ReactDOM.render(
   <React.StrictMode>
-    <StoreProvider>
+    <ProfileProvider>
       <App />
-    </StoreProvider>
+    </ProfileProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

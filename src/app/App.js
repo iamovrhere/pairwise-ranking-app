@@ -1,7 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { Store } from 'contexts/Store';
+import { ProfileContext } from 'contexts/Profile';
 import {
   BrowserRouter as Router,
   Switch,
@@ -16,20 +15,22 @@ import Home from 'components/Home';
 import EditProfile from 'components/EditProfile';
 
 function App() {
-  const { state, dispatch } = React.useContext(Store);
+  const { state, dispatch } = React.useContext(ProfileContext);
   console.log(state);
 
   return (
-    <Router>
-      <Switch>
-        <Route path={editProfileRoute}>
-          <EditProfile />
-        </Route>
-        <Route path={homeRoute}>
-          <Home />
-        </Route>
-      </Switch>
-    </Router>
+    <div className="App">
+      <Router>
+        <Switch>
+          <Route path={editProfileRoute}>
+            <EditProfile />
+          </Route>
+          <Route path={homeRoute}>
+            <Home />
+          </Route>
+        </Switch>
+      </Router>
+    </div>
   );
 }
 
