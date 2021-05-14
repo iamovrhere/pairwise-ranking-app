@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from 'app/logo.svg';
-import { ProfileContext } from 'contexts/Profile';
+import { AppContext } from 'contexts/App';
 import {
   Link
 } from 'react-router-dom';
@@ -9,7 +9,7 @@ import {
 } from 'app/routes';
 
 function NewProfileComponent() {
-  const { state, dispatch } = React.useContext(ProfileContext);
+  const { state, dispatch } = React.useContext(AppContext);
   console.log(state);
 
   return (

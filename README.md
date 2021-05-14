@@ -65,7 +65,9 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 # TODOs
 
-[ ] yarn add styled-components
+[ ] Set material UI colour theme
+[ ] Convert into TypeScript
+[ ] Tests for contexts/reducers
 
 Below this is stock README
 ---

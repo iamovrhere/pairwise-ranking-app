@@ -1,31 +1,40 @@
 import React from 'react';
-import { PROFILE_ADD, ProfileContext } from 'contexts/Profile';
+import { addProfile, AppContext } from 'contexts/App';
 import {
   Link
 } from 'react-router-dom';
 import {
   editProfileRoute
 } from 'app/routes';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 
 function HomeComponent() {
-  const { state, dispatch } = React.useContext(ProfileContext);
+  const { state, dispatch } = React.useContext(AppContext);
   const { profiles } = state;
 
   return (
     <header className="App-header">
 
-      {profiles.map((profile) => (
-        <div>{profile}</div>
-      ))}
-      <button onClick={() => dispatch({
-        type: PROFILE_ADD, data: 'foobar ' + new Date().toISOString()
-      })} >
-        New Profile
-      </button>
+      {profiles.length ?
+        profiles.map(({ name, key }) => (
+          <div>{`${name} ${key}`}</div>
+        )) :
+        'None'
+      }
+      <Link to={editProfileRoute}>
+        <Fab
+          color="primary"
+          aria-label="add"
+        >
+          <AddIcon />
+        </Fab>
+      </Link>
+
       <p>
         Edit <code>src/App.js</code> and save to reload.
       </p>
-      <Link to={editProfileRoute}>Route Test</Link>
+
     </header>
   );
 }

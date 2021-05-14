@@ -1,27 +1,40 @@
 import React from 'react';
 
-export const ProfileContext = React.createContext();
+export const AppContext = React.createContext();
 
-export const PROFILE_ADD = 'PROFILE/ADD';
+const PROFILE_ADD = 'PROFILE/ADD';
+const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 
 /**
- * @param {string} name
- * @return {string} New pseudo-random key
+ * React reducer action.
+ * @typedef {{
+ *  type: string, data: any
+ * }} Action
  */
-const generateNewKey = (name) =>
-  `${name.substring(0, 10)}_` +
-  `${new Date().getTime()}_` +
-  `${Math.random().toString(36).substring(2, 4)}`;
 
 /**
+ * Dispatch action.
+ *
+ * @param {string} key
+ * @return {Action}
+ */
+export const setCurrentProfile = (key) => ({
+  type: PROFILE_ADD,
+  data: key
+});
+
+/**
+ * Dispatch action.
  *
  * @param {string} name
+ * @param {string} key
+ * @return {Action}
  */
-export const addProfile = (name) => ({
+export const addProfile = (name, key) => ({
   type: PROFILE_ADD,
   data: {
     name,
-    key: generateNewKey(name)
+    key
   }
 });
 
@@ -33,16 +46,10 @@ export const addProfile = (name) => ({
   * }} BaseState
   */
 const initialState = {
-  currentProfile: null,
+  currentProfileKey: null,
   profiles: []
 };
 
-/**
- * React reducer action.
- * @typedef {{
- *  type: string, data: any
- * }} Action
- */
 
 /**
  *
@@ -57,6 +64,11 @@ function reducer(state, action) {
         ...state,
         profiles: [...state.profiles, action.data]
       };
+    case PROFILE_SET_CURRENT:
+      return {
+        ...state,
+        currentProfileKey: action.data
+      };
     default:
       return state;
   }
@@ -65,13 +77,13 @@ function reducer(state, action) {
 /**
  * @returns {{ state: initialState, dispatch: (Action) => {}}}
  */
-export function ProfileProvider(props) {
+export function AppProvider(props) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const value = { state, dispatch };
 
   return (
-    <ProfileContext.Provider value={value}>
+    <AppContext.Provider value={value}>
       {props.children}
-    </ProfileContext.Provider>
+    </AppContext.Provider>
   );
 }
