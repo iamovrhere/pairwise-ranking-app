@@ -1,5 +1,5 @@
 import React from 'react';
-import { addProfile, AppContext } from 'contexts/App';
+import { AppContext } from 'contexts/App';
 import {
   Link
 } from 'react-router-dom';
@@ -18,7 +18,7 @@ function HomeComponent() {
 
       {profiles.length ?
         profiles.map(({ name, key }) => (
-          <div>{`${name} ${key}`}</div>
+          <div key={key}>{`${name} ${key}`}</div>
         )) :
         'None'
       }

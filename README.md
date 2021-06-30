@@ -6,7 +6,7 @@ In it we expand the comparisons into a every possible combination of 2, compare 
 
 > L. L. Thurstone first introduced a scientific approach to using pairwise comparisons for measurement in 1927, which he referred to as the law of comparative judgment.
 
-This is intended as a simple web app to aggregate a preference list from input (using local storage for now), by simplifying to a simple A or B choice.
+This is intended as a simple web app to aggregate a preference list from input (using local storage for now), by simplifying to a simple A or B choice. The expected audience (aside from just myself), is someone with _minor_ technical understanding.
 
 # Requirements
 
@@ -66,8 +66,13 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 # TODOs
 
 [ ] Set material UI colour theme
+[ ] RESPONSIVE - Tinker with the mobile/tablet/desktop profiles
+    - I will likely most use this with tablet/mobile.
 [ ] Convert into TypeScript
 [ ] Tests for contexts/reducers
+[ ] Router Transitions http://maisano.github.io/react-router-transition/getting-started / https://www.npmjs.com/package/react-router-transition / https://reactrouter.com/web/example/animated-transitions
+[ ] TRANSLATIONS - Add translations (probably last since this is primary for my use)
+[ ] Perhaps either setup some backend (meeeh) or an export/import ranking.
 
 Below this is stock README
 ---
