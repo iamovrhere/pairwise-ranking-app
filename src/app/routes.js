@@ -1,5 +1,6 @@
 import SelectProfile from 'components/SelectProfile';
 import EditProfile from 'components/EditProfile';
+import PairVote from 'components/PairVote';
 
 /**
  * See: react-router-dom
@@ -11,7 +12,7 @@ import EditProfile from 'components/EditProfile';
 export const selectProfileRoute = '/';
 export const editProfileRoute = '/edit-profile';
 export const viewProfileList = '/';
-export const voteOnPairs = '/';
+export const voteOnPairs = '/vote-pair';
 export const homeRoute = selectProfileRoute;
 
 /**
@@ -26,6 +27,7 @@ const routeComponent = (path, component) => ({ path, component });
  * (Array to guarantee order).
  */
 export const routeList = [
+  routeComponent(voteOnPairs, PairVote),
   routeComponent(editProfileRoute, EditProfile),
   routeComponent(selectProfileRoute, SelectProfile),
 ];
