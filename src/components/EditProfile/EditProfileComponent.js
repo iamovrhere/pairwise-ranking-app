@@ -29,45 +29,43 @@ function EditProfileComponent({ history }) {
 
   return (
     <ProfileContainer>
-      <header className="App-header">
-        <ProfileCard>
-          <ProfileName
-            aria-label={profileNameLabel}
-            label={profileNameLabel}
-            placeholder={profileNamePlaceholder}
-            helperText=""
-            variant="outlined"
-          />
-          <ListTextArea
-            aria-label={listLabel}
-            label={listLabel}
-            multiline
-            rows={listMin}
-            rowsMax={listMax}
-            variant="outlined"
-            placeholder={listPlaceholder}
-          />
-        </ProfileCard>
-        <SaveButton
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            // TODO actual profile.
-            dispatch(addProfile('foobar', new Date().getTime()));
-            // TODO push to next.
-            history.push(viewProfileList);
-          }}
-        >
-          Save
-        </SaveButton>
-        <BackButton
+      <ProfileCard>
+        <ProfileName
+          aria-label={profileNameLabel}
+          label={profileNameLabel}
+          placeholder={profileNamePlaceholder}
+          helperText=""
           variant="outlined"
-          color="secondary"
-          onClick={() => goBackOrHome(history)}
-        >
-          Back
-        </BackButton>
-      </header>
+        />
+        <ListTextArea
+          aria-label={listLabel}
+          label={listLabel}
+          multiline
+          rows={listMin}
+          rowsMax={listMax}
+          variant="outlined"
+          placeholder={listPlaceholder}
+        />
+      </ProfileCard>
+      <BackButton
+        variant="outlined"
+        color="secondary"
+        onClick={() => goBackOrHome(history)}
+      >
+        Back
+      </BackButton>
+      <SaveButton
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          // TODO actual profile.
+          dispatch(addProfile('foobar', new Date().getTime()));
+          // TODO push to next.
+          history.push(viewProfileList);
+        }}
+      >
+        Save
+      </SaveButton>
     </ProfileContainer>
   );
 }

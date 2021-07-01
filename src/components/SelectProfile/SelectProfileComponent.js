@@ -1,41 +1,35 @@
 import React from 'react';
 import { AppContext } from 'contexts/App';
-import {
-  Link
-} from 'react-router-dom';
+import { ListContainer } from './SelectProfile.style';
 import {
   editProfileRoute
 } from 'app/routes';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
-function HomeComponent() {
+function HomeComponent({ history }) {
   const { state, dispatch } = React.useContext(AppContext);
   const { profiles } = state;
 
+  const emptyList = 'Create a profile to get started';
   return (
-    <header className="App-header">
-
-      {profiles.length ?
-        profiles.map(({ name, key }) => (
-          <div key={key}>{`${name} ${key}`}</div>
-        )) :
-        'None'
-      }
-      <Link to={editProfileRoute}>
-        <Fab
-          color="primary"
-          aria-label="add"
-        >
-          <AddIcon />
-        </Fab>
-      </Link>
-
-      <p>
-        Edit <code>src/App.js</code> and save to reload.
-      </p>
-
-    </header>
+    <>
+      <ListContainer>
+        {profiles.length ?
+          profiles.map(({ name, key }) => (
+            <div key={key}>{`${name} ${key}`}</div>
+          )) :
+          emptyList
+        }
+      </ListContainer>
+      <Fab
+        color="primary"
+        aria-label="add"
+        onClick={() => history.push(editProfileRoute)}
+      >
+        <AddIcon />
+      </Fab>
+    </>
   );
 }
 

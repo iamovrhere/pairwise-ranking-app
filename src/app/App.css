@@ -2,7 +2,7 @@ body {
   background-color: #282c34;
 }
 
-.App {
+.app {
   text-align: center;
   width: 80%;
   margin: auto;
@@ -19,7 +19,7 @@ body {
   }
 }
 
-.App-header {
+.app-body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;

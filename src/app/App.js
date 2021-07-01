@@ -14,16 +14,18 @@ function App() {
   console.log(state);
 
   return (
-    <div className="App">
-      <Router>
-        <Switch>
-          {
-            routeList.map(({ path, component }) => (
-              <Route path={path} component={component} />
-            ))
-          }
-        </Switch>
-      </Router>
+    <div className="app">
+      <div className="app-body">
+        <Router>
+          <Switch>
+            {
+              routeList.map(({ path, component }) => (
+                <Route path={path} component={component} />
+              ))
+            }
+          </Switch>
+        </Router>
+      </div>
     </div >
   );
 }
