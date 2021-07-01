@@ -1,8 +1,18 @@
-import Home from 'components/Home';
+import SelectProfile from 'components/SelectProfile';
 import EditProfile from 'components/EditProfile';
 
-export const homeRoute = '/';
+/**
+ * See: react-router-dom
+ * @typedef {{
+ *  goBack: Function, replace: Function
+ * }} history
+ */
+
+export const selectProfileRoute = '/';
 export const editProfileRoute = '/edit-profile';
+export const viewProfileList = '/';
+export const voteOnPairs = '/';
+export const homeRoute = selectProfileRoute;
 
 /**
  * @param {string} path
@@ -17,5 +27,18 @@ const routeComponent = (path, component) => ({ path, component });
  */
 export const routeList = [
   routeComponent(editProfileRoute, EditProfile),
-  routeComponent(homeRoute, Home),
+  routeComponent(selectProfileRoute, SelectProfile),
 ];
+
+/**
+ * Way to safely go back, regardless of where you start.
+ *
+ * @param {history} history
+ */
+export const goBackOrHome = (history) => {
+  if (history.length > 1) {
+    history.goBack();
+  } else {
+    history.replace(homeRoute);
+  }
+};

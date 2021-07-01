@@ -37,4 +37,9 @@ export const SaveButton = styled(Button)`
   }
 `;
 
-
+export const BackButton = styled(Button)`
+  &.MuiButton-root {
+    width: 10rem;
+    margin: 1rem;
+  }
+`;

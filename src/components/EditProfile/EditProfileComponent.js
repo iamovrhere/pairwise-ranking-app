@@ -1,13 +1,13 @@
 import React from 'react';
 import { addProfile, AppContext } from 'contexts/App';
-import { Link } from 'react-router-dom';
-import { homeRoute } from 'app/routes';
+import { viewProfileList, goBackOrHome } from 'app/routes';
 import {
   ListTextArea,
   ProfileContainer,
   ProfileCard,
   ProfileName,
-  SaveButton
+  SaveButton,
+  BackButton
 } from './EditProfile.style';
 
 function EditProfileComponent({ history }) {
@@ -23,8 +23,8 @@ function EditProfileComponent({ history }) {
   const listMin = 10;
   const listMax = 20;
 
-  const profileNameLabel = "List Name";
-  const profileNamePlaceholder = "What's the name of this list?";
+  const profileNameLabel = "Profile Name";
+  const profileNamePlaceholder = "What's the name of this Profile?";
 
 
   return (
@@ -54,12 +54,19 @@ function EditProfileComponent({ history }) {
           onClick={() => {
             // TODO actual profile.
             dispatch(addProfile('foobar', new Date().getTime()));
-            history.push(homeRoute);
+            // TODO push to next.
+            history.push(viewProfileList);
           }}
         >
           Save
         </SaveButton>
-        <Link to={homeRoute}>Home</Link>
+        <BackButton
+          variant="outlined"
+          color="secondary"
+          onClick={() => goBackOrHome(history)}
+        >
+          Back
+        </BackButton>
       </header>
     </ProfileContainer>
   );
