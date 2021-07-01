@@ -2,12 +2,14 @@ import React from 'react';
 import { addProfile, AppContext } from 'contexts/App';
 import { viewProfileList, goBackOrHome } from 'app/routes';
 import {
+  PrimaryButton,
+  CancelButton
+} from 'components/common/common.style';
+import {
   ListTextArea,
   ProfileContainer,
   ProfileCard,
   ProfileName,
-  SaveButton,
-  BackButton
 } from './EditProfile.style';
 
 function EditProfileComponent({ history }) {
@@ -47,16 +49,12 @@ function EditProfileComponent({ history }) {
           placeholder={listPlaceholder}
         />
       </ProfileCard>
-      <BackButton
-        variant="outlined"
-        color="secondary"
+      <CancelButton
         onClick={() => goBackOrHome(history)}
       >
         Back
-      </BackButton>
-      <SaveButton
-        variant="contained"
-        color="primary"
+      </CancelButton>
+      <PrimaryButton
         onClick={() => {
           // TODO actual profile.
           dispatch(addProfile('foobar', new Date().getTime()));
@@ -65,7 +63,7 @@ function EditProfileComponent({ history }) {
         }}
       >
         Save
-      </SaveButton>
+      </PrimaryButton>
     </ProfileContainer>
   );
 }
