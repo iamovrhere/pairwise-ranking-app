@@ -69,6 +69,8 @@ fs.inotify.max_user_watches = 100000
 
 Launches the test runner in the interactive watch mode.
 
+(None yet).
+
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 #### `yarn build`

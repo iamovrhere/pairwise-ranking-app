@@ -1,6 +1,7 @@
 import SelectProfile from 'components/SelectProfile';
 import EditProfile from 'components/EditProfile';
 import PairVote from 'components/PairVote';
+import ViewList from 'components/ViewList';
 
 /**
  * See: react-router-dom
@@ -11,7 +12,7 @@ import PairVote from 'components/PairVote';
 
 export const selectProfileRoute = '/';
 export const editProfileRoute = '/edit-profile';
-export const viewProfileList = '/';
+export const viewProfileList = '/list';
 export const voteOnPairs = '/vote-pair';
 export const homeRoute = selectProfileRoute;
 
@@ -28,6 +29,7 @@ const routeComponent = (path, component) => ({ path, component });
  */
 export const routeList = [
   routeComponent(voteOnPairs, PairVote),
+  routeComponent(viewProfileList, ViewList),
   routeComponent(editProfileRoute, EditProfile),
   routeComponent(selectProfileRoute, SelectProfile),
 ];
