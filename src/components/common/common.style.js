@@ -13,6 +13,12 @@ export const AppTheme = createMuiTheme({
 // https://material-ui.com/customization/breakpoints/
 // 0px     600px    960px    1280px   1920px
 const md = 960;
+/**
+ * Usage:
+ * ${breakPoint.mediumAndSmaller} {
+ *    ... // styling
+ *  }
+ */
 export const breakPoint = {
   mediumAndSmaller: `@media (max-width: ${md}px)`
 };

@@ -19,7 +19,7 @@ Quick 30 second wire-frames for direction:
 ![Wire-frames of select and edit pages](./screenshots/screens_1_and_2_planning.jpg)
 ![Wire-frames of result and vote pages](./screenshots/screens_3_and_4_planning.jpg)
 
-Screen 3 does need some refinement of whether or not to move tabs and when/where to have buttons.
+Screen 3 does need some refinement of when/where to have buttons.
 
 </details>
 

@@ -1,5 +1,5 @@
-import { breakPoint } from 'components/common/common.style';
 import styled from 'styled-components';
+import { breakPoint } from 'components/common/common.style';
 
 // TODO RESPONSIVE
 export const PairContainer = styled.div`

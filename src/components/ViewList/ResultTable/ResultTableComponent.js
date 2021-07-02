@@ -1,54 +1,24 @@
 /**
- * Bootstrapping from: https://material-ui.com/components/tables/#sorting-amp-selecting
+ * Modified from: https://material-ui.com/components/tables/#sorting-amp-selecting
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-
-// TODO replace with real data.
-function createFakeData(rank, name, img, score) {
-  return { rank, name, img, score };
-}
-
-const lizard = 'https://material-ui.com/static/images/cards/contemplative-reptile.jpg';
-const none = '';
-const rows = [
-  createFakeData(10, 'Cupcake', lizard, 9877),
-  createFakeData(9, 'Donut', lizard, 8766),
-  createFakeData(8, 'Eclair', lizard, 7654),
-  createFakeData(7, 'Frozen yoghurt', lizard, 6543),
-  createFakeData(6, 'Gingerbread', none, 5432),
-  createFakeData(5, 'Honeycomb', lizard, 4322),
-  createFakeData(4, 'Ice cream sandwich', none, 3210),
-  createFakeData(3, 'Jelly Bean', lizard, 2109),
-  createFakeData(2, 'KitKat', none, 1098),
-  createFakeData(1, 'Lollipop', lizard, 987),
-  createFakeData(0, 'Marshmallow', none, 876),
-  createFakeData(0, 'Nougat', lizard, 765),
-  createFakeData(0, 'Oreo', none, 543),
-];
-
-const headCells = [
-  { id: 'rank', numeric: true, disablePadding: true, label: 'Rank' },
-  { id: 'img', numeric: false, disablePadding: false, label: 'Image' },
-  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'score', numeric: true, disablePadding: false, label: 'Score' },
-];
+import {
+  Checkbox,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TablePagination,
+  TableRow,
+} from '@material-ui/core';
+import EnhancedTableHead from './EnhancedTableHeadComponent';
+import EnhancedTableToolbar from './EnhancedTableToolbarComponent';
+import {
+  RowImage,
+  useStyles,
+} from './ResultTable.style';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -76,148 +46,57 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
+/**
+ * Expected structure of the table data.
+ * @typedef {{
+  * id: string,
+  * rank: number,
+  * name: string,
+  * img: string,
+  * score: number }} TableData
+  */
 
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all items' }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
+/**
+ * Helps define data structure.
+ *
+ * @param {number} rank
+ * @param {string} name
+ * @param {string} img
+ * @param {number} score
+ * @param {string} id Will be used later when actions are added.
+ * @return {TableData}
+ */
+export function createData(rank, name, img, score, id = '') {
+  return { id, rank, name, img, score };
 }
 
-EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
+/**
+ * `id` must match createData().
+ */
+const headCells = [
+  { id: 'rank', numeric: true, disablePadding: true, label: 'Rank' },
+  { id: 'img', numeric: false, disablePadding: false, label: 'Image' },
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'score', numeric: true, disablePadding: false, label: 'Score' },
+];
 
-const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
-      : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
-  title: {
-    flex: '1 1 100%',
-  },
-}));
-
-const EnhancedTableToolbar = (props) => {
-  const classes = useToolbarStyles();
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      {numSelected > 0 ? (
-        <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
-        </Typography>
-      ) : (
-          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-            Results
-          </Typography>
-        )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Clear coming soon">
-          <IconButton aria-label="Clear coming soon">
-            {/* <DeleteIcon /> */}
-            COMING SOON!
-          </IconButton>
-        </Tooltip>
-      ) : null}
-    </Toolbar>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
-  container: {
-    maxHeight: 440,
-  },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-  table: {
-    minWidth: 200,
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-}));
 
 const rowsPerPageOptions = [10, 25, 100, 1000];
-const defaultRowsPerPage = 25;
-const defaultOrderBy = 'rank';
-const defaultOrder = 'desc';
+const defaultRowsPerPage = 100;
 
-export default function EnhancedTable() {
+/**
+ * Creates the enhanced table with sortable headers, defined order,
+ * and selectable rows.
+ *
+ * @param {{
+ *  title: string,
+ *  headCells: [TableData],
+ *  defaultOrder: string,
+ *  defaultOrderBy: string,
+ * }} props
+ */
+export default function EnhancedTable(props) {
+  const { title, rows, defaultOrderBy, defaultOrder } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState(defaultOrder);
   const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
@@ -271,12 +150,13 @@ export default function EnhancedTable() {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          title={title}
+          numSelected={selected.length}
+        />
         <TableContainer className={classes.container}>
           <Table
             stickyHeader
@@ -293,6 +173,7 @@ export default function EnhancedTable() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
+              headCells={headCells}
             />
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
@@ -320,15 +201,24 @@ export default function EnhancedTable() {
                       {headCells.map(({ id, numeric }) => {
                         const isName = id === 'name';
                         const isImg = id === 'img';
+                        // We want name to be the field to grow.
+                        const width = isName ? null :
+                          (isImg ? 100 : 30);
+
                         return (
                           <TableCell
                             align={numeric ? 'right' : 'left'}
                             id={isName ? labelId : null}
                             component={isName ? 'th' : null}
+                            scope={isName ? 'row' : null}
+                            width={width}
                           >
                             {
                               isImg ?
-                                (<img src={row.img} alt={row.name} />) :
+                                (row.img && <RowImage
+                                  src={row.img}
+                                  alt={row.name}
+                                />) :
                                 row[id]
                             }
                           </TableCell>
@@ -337,11 +227,7 @@ export default function EnhancedTable() {
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={headCells.length} />
-                </TableRow>
-              )}
+
             </TableBody>
           </Table>
         </TableContainer>
@@ -356,6 +242,21 @@ export default function EnhancedTable() {
         />
       </Paper>
 
-    </div>
+    </div >
   );
 }
+
+EnhancedTable.propTypes = {
+  headCells: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    rank: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    img: PropTypes.string.isRequired,
+    score: PropTypes.number.isRequired,
+  })),
+  defaultOrderBy: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  defaultOrder: PropTypes.oneOf([
+    'rank', 'name', 'img', 'score'
+  ]).isRequired,
+  title: PropTypes.string.isRequired,
+};
