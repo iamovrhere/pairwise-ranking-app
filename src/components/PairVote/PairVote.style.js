@@ -1,8 +1,3 @@
-import {
-  Button,
-  Card,
-  TextField
-} from '@material-ui/core';
 import { breakPoint } from 'components/common/common.style';
 import styled from 'styled-components';
 
@@ -12,28 +7,33 @@ export const PairContainer = styled.div`
   align-content: space-between;
   flex-direction: column;
   align-items: center;
-
+  margin: 1rem 0;
 `;
 
 export const BallotBox = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+
+  margin-top: 2rem;
 
   > * {
     max-width: 45%;
+    flex-grow: 1;
   }
 
   ${breakPoint.mediumAndSmaller} {
     flex-direction: column;
     > * {
       max-width: unset;
+      width: 100%;
     }
   }
 `;
 
 export const OrText = styled.div`
-  margin: 1rem 0;
+  margin: 1rem;
+  flex-grow: unset;
 `;
 
 export const SkippedText = styled.div`

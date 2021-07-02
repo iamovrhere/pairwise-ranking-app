@@ -11,8 +11,9 @@ import styled from 'styled-components';
 const imgHeight = 250;
 const minHeight = imgHeight + 80;
 const BallotCard = styled(Card)`
-  min-height: ${minHeight}px;
   display: flex;
+  min-height: ${minHeight}px;
+  min-width: ${minHeight}px;
 
   h2 {
     padding: 0 1rem;
@@ -22,6 +23,7 @@ const BallotCard = styled(Card)`
 
 /**
  * Creates a single ballot image card.
+ * If there's no image, it'll just render the text is squarish card.
  *
  * @param {{
   img: null|string,
