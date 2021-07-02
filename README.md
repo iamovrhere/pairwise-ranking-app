@@ -8,23 +8,39 @@ In it we expand the comparisons into a every possible combination of 2, compare 
 
 This is intended as a simple web app to aggregate a preference list from input (using local storage for now), by simplifying to a simple A or B choice. The expected audience (aside from just myself), is someone with _minor_ technical understanding.
 
-# Requirements
+## Screenshots
+
+### Planning
+
+<details open>
+  <summary>Click to expand/collapse</summary>
+
+Quick 30 second wire-frames for direction:
+![Wire-frames of select and edit pages](./screenshots/screens_1_and_2_planning.jpg)
+![Wire-frames of result and vote pages](./screenshots/screens_3_and_4_planning.jpg)
+
+Screen 3 does need some refinement of whether or not to move tabs and when/where to have buttons.
+
+</details>
+
+
+## Requirements
 
 * **Recommended:** Node 14 (via [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 * yarn - [Install yarn](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 
-# Setup
+## Setup
 
 This was bootstrapped using `yarn create react-app pairwise-ranking-app`. See [Create React App](https://github.com/facebook/create-react-app).
 
 1. yarn install
 1. Done
 
-## Available Scripts
+### Available Scripts
 
 In the project directory, you can run:
 
-### `yarn start`
+#### `yarn start`
 
 Runs the app in the development mode.
 
@@ -32,7 +48,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits. You will also see any lint errors in the console.
 
-####  Error: `System limit for number of file watchers reached`
+#####  Error: `System limit for number of file watchers reached`
 
 ```bash
 Internal watch failed: ENOSPC: System limit for number of file watchers reached, watch '/media/rehan-sattar/Development/All projects/GrpahQl/graph-ql-course/graphql-prisma/src/generated
@@ -49,13 +65,13 @@ Or edit `/etc/sysctl.d/10-user-watches.conf` with:
 fs.inotify.max_user_watches = 100000
 ```
 
-### `yarn test`
+#### `yarn test`
 
 Launches the test runner in the interactive watch mode.
 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `yarn build`
+#### `yarn build`
 
 Builds the app for production to the `build` folder.
 
@@ -63,7 +79,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-# TODOs
+## TODOs
 
 [ ] Set material UI colour theme
 [ ] RESPONSIVE - Tinker with the mobile/tablet/desktop profiles
