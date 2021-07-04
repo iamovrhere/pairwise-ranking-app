@@ -16,21 +16,26 @@ function App() {
   console.log(state);
 
   return (
-    <div className="app">
-      <div className="app-body">
-        <ThemeProvider theme={AppTheme}>
-          <Router>
-            <Switch>
-              {
-                routeList.map(({ path, component }) => (
-                  <Route path={path} component={component} />
-                ))
-              }
-            </Switch>
-          </Router>
-        </ThemeProvider>
+    <>
+      <div className="app">
+        <div className="app-body">
+          <ThemeProvider theme={AppTheme}>
+            <Router>
+              <Switch>
+                {
+                  routeList.map(({ path, component }) => (
+                    <Route key={path} path={path} component={component} />
+                  ))
+                }
+              </Switch>
+            </Router>
+          </ThemeProvider>
+        </div>
       </div>
-    </div >
+      <div className="build-info">
+        Release: {process.env.BUILD_INFO}
+      </div>
+    </>
   );
 }
 
