@@ -14,6 +14,7 @@ const BallotCard = styled(Card)`
   display: flex;
   min-height: ${minHeight}px;
   min-width: ${minHeight}px;
+  border-radius: .5rem;
 
   h2 {
     padding: 0 1rem;

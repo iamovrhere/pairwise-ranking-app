@@ -1,12 +1,22 @@
 import {
   Button,
+  Fab,
+  colors
 } from '@material-ui/core';
 import styled from 'styled-components';
 import { createMuiTheme } from '@material-ui/core/styles';
 
 // https://material-ui.com/customization/default-theme/
+// Nice tool for palette mixing:
+// https://material-ui.com/customization/color/
 export const AppTheme = createMuiTheme({
   palette: {
+    primary: {
+      // Slightly darker than `colors.lightGreen`
+      // Better contrast and more on theme.
+      main: '#689f38',
+    },
+    secondary: colors.orange
   },
 });
 
@@ -45,5 +55,10 @@ export const CancelButton = styled(CommonButton).attrs({
   color: "secondary"
 })``;
 
-
-
+export const PrimaryFab = styled(Fab).attrs({
+  color: "primary"
+})`
+  &.MuiFab-root {
+    margin: .5rem;
+  }
+`;

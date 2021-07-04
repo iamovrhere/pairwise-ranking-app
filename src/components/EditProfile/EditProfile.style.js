@@ -1,5 +1,6 @@
 import {
   Card,
+  Paper,
   TextField
 } from '@material-ui/core';
 import styled from 'styled-components';
@@ -9,8 +10,11 @@ export const ProfileContainer = styled.div`
   margin: auto;
 `;
 
-export const ProfileCard = styled(Card)`
+export const ProfileCard = styled(Paper).attrs({
+  elevation: 10
+})`
   padding: 1rem;
+  border-radius: 1rem;
 `;
 
 export const ProfileName = styled(TextField)`

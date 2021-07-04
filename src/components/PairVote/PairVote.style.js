@@ -39,5 +39,5 @@ export const OrText = styled.div`
 export const SkippedText = styled.div`
   margin-top: 1rem;
   font-size: 1rem;
-  color: #999;
+  color: rgba(255, 255, 255, 0.7);
 `;

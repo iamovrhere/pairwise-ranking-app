@@ -12,6 +12,7 @@ export const useStyles = makeStyles((theme) => ({
   paper: {
     width: '100%',
     marginBottom: theme.spacing(2),
+    borderRadius: '1rem'
   },
   table: {
     minWidth: 200,
