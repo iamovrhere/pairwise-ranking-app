@@ -1,7 +1,9 @@
 # Pairwise Ranking Web
 
-["Pairwise Ranking"](https://en.wikipedia.org/wiki/Pairwise_comparison) (sometimes called "Preference Ranking"), can be best described as taking a "divide and conquer" approach to prioritizing/ranking a set.
+[Click here to see a demo.](https://iamovrhere.github.io/pairwise-ranking-app/) **INCOMPLETE**
 
+["Pairwise Ranking"](https://en.wikipedia.org/wiki/Pairwise_comparison) (sometimes called "Preference Ranking"), can be best described as taking a "divide and conquer" approach to prioritizing/ranking a set.
+https://openmoji.org/library/#search=pear&emoji=1F350
 In it we expand the comparisons into a every possible combination of 2, compare a pair, assign one a winner, and repeat. After we've assigned every possible pair a winner, we will have an aggregate of winners, where repeated winners gravitate to the top and losers to the bottom.
 
 > L. L. Thurstone first introduced a scientific approach to using pairwise comparisons for measurement in 1927, which he referred to as the law of comparative judgment.
@@ -67,30 +69,53 @@ fs.inotify.max_user_watches = 100000
 
 #### `yarn test`
 
-Launches the test runner in the interactive watch mode.
+**(None done yet).**
 
-(None yet).
+Launches the test runner in the interactive watch mode.
 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 #### `yarn build`
 
-Builds the app for production to the `build` folder.
+Usage:
+```
+PUBLIC_URL="http://localhost/public_html/pairwise-ranking-app/" yarn build
+```
+
+Builds the app for production to the `build` folder. Provides the commit hash on the page.
 
 It correctly bundles React in production mode and optimizes the build for the best performance. You need to set `PUBLIC_URL` if you want a non-root path.
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+#### `yarn deploy-to-github`
+
+Usage:
+```bash
+# Only builds and copies.
+yarn deploy-to-github
+# Builds, copies, commits.
+yarn deploy-to-github "[Mod]: Publishing change to iamovrhere.github.io"
+```
+
+Builds & commits changes to:
+* https://github.com/iamovrhere/iamovrhere.github.io
+
+To demo/use here:
+* https://iamovrhere.github.io/pairwise-ranking-app/
+
 ## TODOs
 
-[ ] Set material UI colour theme
-[ ] RESPONSIVE - Tinker with the mobile/tablet/desktop profiles
+- [x] Style out the build info
+- [x] Set material UI colour theme
+- [ ] RESPONSIVE - Tinker with the mobile/tablet/desktop profiles
     - I will likely most use this with tablet/mobile.
-[ ] Convert into TypeScript
-[ ] Tests for contexts/reducers
-[ ] Router Transitions http://maisano.github.io/react-router-transition/getting-started / https://www.npmjs.com/package/react-router-transition / https://reactrouter.com/web/example/animated-transitions
-[ ] TRANSLATIONS - Add translations (probably last since this is primary for my use)
-[ ] Perhaps either setup some backend (meeeh) or an export/import ranking.
+- [ ] Convert into TypeScript
+    - Should I bother?
+- [ ] Tests for contexts/reducers
+- [ ] Router Transitions http://maisano.github.io/react-router-transition/getting-started / https://www.npmjs.com/package/react-router-transition / https://reactrouter.com/web/example/animated-transitions
+- [ ] TRANSLATIONS - Add translations (probably last since this is primary for my use)
+- [ ] Perhaps either setup some backend (meeeh) or an export/import ranking.
 
 Below this is stock README
 ---
