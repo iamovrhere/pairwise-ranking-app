@@ -45,7 +45,7 @@ function PairVoteComponent({ history }) {
   const skippedPhrase = skippedTimes === 1 ?
     `1 time` : `${skippedTimes} times`;
 
-  const totalItems = 200;
+  const totalComparisons = 200;
 
   const castTheVote = id => {
     setProgress(progress + 1);
@@ -53,12 +53,13 @@ function PairVoteComponent({ history }) {
       generateCard(),
       generateCard()
     ]);
+    setOrClickCount(0);
     console.log(`Voted for: ${id}`);
   };
 
   return (
     <PairContainer>
-      <LinearProgressBar value={progress} total={totalItems} />
+      <LinearProgressBar value={progress} total={totalComparisons} />
       <BallotBox>
         <BallotCard
           img={ballotValues[0].img}

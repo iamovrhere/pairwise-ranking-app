@@ -9,29 +9,31 @@ import {
   ListContainer,
   ProgressContainer,
 } from './ViewList.style';
-import ResultTable, { createData } from './ResultTable'
+import ResultTable, { createRowData } from './ResultTable'
 
 
 // TODO replace with real data.
 const lizard = 'https://material-ui.com/static/images/cards/contemplative-reptile.jpg';
 const none = '';
 const rows = [
-  createData(10, 'Cupcake', lizard, 9877),
-  createData(9, 'Donut', lizard, 8766),
-  createData(8, 'Eclair', lizard, 7654),
-  createData(7, 'Frozen yoghurt', lizard, 6543),
-  createData(6, 'Gingerbread', none, 5432),
-  createData(5, 'Honeycomb', lizard, 4322),
-  createData(4, 'Ice cream sandwich', none, 3210),
-  createData(3, 'Jelly Bean', lizard, 2109),
-  createData(2, 'KitKat', none, 1098),
-  createData(1, 'Lollipop', lizard, 987),
-  createData(0, 'Marshmallow', none, 876),
-  createData(0, 'Nougat', lizard, 765),
-  createData(0, 'Oreo', none, 543),
+  createRowData('Cupcake', lizard, 9877),
+  createRowData('Donut', lizard, 8766),
+  createRowData('Eclair', lizard, 7654),
+  createRowData('Frozen yoghurt', lizard, 6543),
+  createRowData('Gingerbread', none, 5432),
+  createRowData('Honeycomb', lizard, 4322),
+  createRowData('Ice cream sandwich', none, 3210),
+  createRowData('Jelly Bean', lizard, 2109),
+  createRowData('KitKat', none, 1098),
+  createRowData('Lollipop', lizard, 987),
+  createRowData('Marshmallow', none, 876),
+  createRowData('Nougat', lizard, 765),
+  createRowData('Oreo', none, 543),
+  createRowData('Foobar', none, 0),
 ];
+const maxScore = 9877;
 
-const defaultOrderBy = 'rank';
+const defaultOrderBy = 'score';
 const defaultOrder = 'desc';
 
 const resultsStartTitle = 'Ready to start';
@@ -41,10 +43,10 @@ const resultsFinal = 'Final Results';
 function ViewListComponent({ history }) {
   // TODO move to the application state.
   const progress = 1;
-  const totalItems = 100;
+  const totalComparisons = 100;
 
   const resultsTitle = progress ?
-    (progress >= totalItems ? resultsFinal : resultsPartial) :
+    (progress >= totalComparisons ? resultsFinal : resultsPartial) :
     resultsStartTitle;
 
   return (
@@ -52,10 +54,10 @@ function ViewListComponent({ history }) {
       <ProgressContainer>
         <LinearProgressBar
           value={progress}
-          total={totalItems}
+          total={totalComparisons}
         />
         {
-          (progress < totalItems) &&
+          (progress < totalComparisons) &&
           (<PrimaryButton
             onClick={() => history.push(voteOnPairs)}
           >
@@ -67,6 +69,7 @@ function ViewListComponent({ history }) {
 
       <ResultTable
         rows={rows}
+        maxScore={maxScore}
         defaultOrderBy={defaultOrderBy}
         defaultOrder={defaultOrder}
         title={resultsTitle}

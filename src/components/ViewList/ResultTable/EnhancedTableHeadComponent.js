@@ -11,7 +11,20 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 
-export default function EnhancedTableHead(props) {
+/**
+ *
+ * @param {{
+    headCells: [TableData]
+    classes: object
+    onSelectAllClick: Function,
+    order: string,
+    orderBy: string,
+    numSelected: number,
+    rowCount: number
+    onRequestSort: Function
+  }} props
+ */
+const EnhancedTableHead = (props) => {
   const {
     headCells,
     classes,
@@ -44,24 +57,28 @@ export default function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
-            </TableSortLabel>
+            {
+              headCell.sortable ?
+                (<TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : 'asc'}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                  {orderBy === headCell.id ? (
+                    <span className={classes.visuallyHidden}>
+                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                    </span>
+                  ) : null}
+                </TableSortLabel>) :
+                headCell.label
+            }
           </TableCell>
         ))}
       </TableRow>
     </TableHead>
   );
-}
+};
 
 EnhancedTableHead.propTypes = {
   headCells: PropTypes.arrayOf(PropTypes.shape({
@@ -69,6 +86,7 @@ EnhancedTableHead.propTypes = {
     numeric: PropTypes.bool.isRequired,
     disablePadding: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
+    sortable: PropTypes.bool.isRequired,
   })),
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
@@ -78,3 +96,5 @@ EnhancedTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
+
+export default EnhancedTableHead;

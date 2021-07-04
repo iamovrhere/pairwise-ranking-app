@@ -1,5 +1,5 @@
-import ResultTableComponent, { createData } from './ResultTableComponent.js';
+import ResultTableComponent, { createRowData } from './ResultTableComponent.js';
 
-export { createData };
+export { createRowData };
 
 export default ResultTableComponent;

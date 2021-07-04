@@ -4,19 +4,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Checkbox,
   Paper,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TablePagination,
-  TableRow,
 } from '@material-ui/core';
 import EnhancedTableHead from './EnhancedTableHeadComponent';
 import EnhancedTableToolbar from './EnhancedTableToolbarComponent';
+import ResultTableRow from './ResultTableRowComponent';
 import {
-  RowImage,
   useStyles,
 } from './ResultTable.style';
 
@@ -59,27 +56,26 @@ function stableSort(array, comparator) {
 /**
  * Helps define data structure.
  *
- * @param {number} rank
  * @param {string} name
  * @param {string} img
  * @param {number} score
  * @param {string} id Will be used later when actions are added.
  * @return {TableData}
  */
-export function createData(rank, name, img, score, id = '') {
-  return { id, rank, name, img, score };
+export function createRowData(name, img, score, id = '') {
+  return { id, name, img, score };
 }
 
 /**
- * `id` must match createData().
+ * Correlates to `createRowData()`.
+ * Ranks is calculated later.
  */
 const headCells = [
-  { id: 'rank', numeric: true, disablePadding: true, label: 'Rank' },
-  { id: 'img', numeric: false, disablePadding: false, label: 'Image' },
-  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'score', numeric: true, disablePadding: false, label: 'Score' },
+  { id: 'score', numeric: true, disablePadding: true, label: 'Score', sortable: true },
+  { id: 'img', numeric: false, disablePadding: false, label: 'Image', sortable: false },
+  { id: 'name', numeric: false, disablePadding: true, label: 'Name', sortable: true },
+  { id: 'rank', numeric: true, disablePadding: false, label: 'Rank', sortable: false },
 ];
-
 
 const rowsPerPageOptions = [10, 25, 100, 1000];
 const defaultRowsPerPage = 100;
@@ -93,16 +89,25 @@ const defaultRowsPerPage = 100;
  *  headCells: [TableData],
  *  defaultOrder: string,
  *  defaultOrderBy: string,
+ *  maxScore: number
  * }} props
  */
 export default function EnhancedTable(props) {
-  const { title, rows, defaultOrderBy, defaultOrder } = props;
+  const {
+    title,
+    rows,
+    defaultOrderBy,
+    defaultOrder,
+    maxScore
+  } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState(defaultOrder);
   const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(defaultRowsPerPage);
+  const [rankStart, setRankStart] = React.useState(1);
+  const [rankEnd, setRankEnd] = React.useState(10);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -156,6 +161,11 @@ export default function EnhancedTable(props) {
         <EnhancedTableToolbar
           title={title}
           numSelected={selected.length}
+          rankRange={{ start: rankStart, end: rankEnd }}
+          onRankRangeChange={({ start, end }) => {
+            setRankStart(start);
+            setRankEnd(end);
+          }}
         />
         <TableContainer className={classes.container}>
           <Table
@@ -183,48 +193,16 @@ export default function EnhancedTable(props) {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell>
-                      {headCells.map(({ id, numeric }) => {
-                        const isName = id === 'name';
-                        const isImg = id === 'img';
-                        // We want name to be the field to grow.
-                        const width = isName ? null :
-                          (isImg ? 100 : 30);
-
-                        return (
-                          <TableCell
-                            align={numeric ? 'right' : 'left'}
-                            id={isName ? labelId : null}
-                            component={isName ? 'th' : null}
-                            scope={isName ? 'row' : null}
-                            width={width}
-                          >
-                            {
-                              isImg ?
-                                (row.img && <RowImage
-                                  src={row.img}
-                                  alt={row.name}
-                                />) :
-                                row[id]
-                            }
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
+                    <ResultTableRow
+                      key={labelId}
+                      headCells={headCells}
+                      row={row}
+                      labelId={labelId}
+                      isItemSelected={isItemSelected}
+                      handleClick={handleClick}
+                      maxScore={maxScore}
+                      rankRange={{ start: rankStart, end: rankEnd }}
+                    />
                   );
                 })}
 
@@ -247,16 +225,16 @@ export default function EnhancedTable(props) {
 }
 
 EnhancedTable.propTypes = {
-  headCells: PropTypes.arrayOf(PropTypes.shape({
+  rows: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
-    rank: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     img: PropTypes.string.isRequired,
     score: PropTypes.number.isRequired,
   })),
-  defaultOrderBy: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  defaultOrder: PropTypes.oneOf([
-    'rank', 'name', 'img', 'score'
+  maxScore: PropTypes.number.isRequired,
+  defaultOrder: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  defaultOrderBy: PropTypes.oneOf([
+    'name', 'score'
   ]).isRequired,
   title: PropTypes.string.isRequired,
 };
