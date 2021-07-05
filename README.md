@@ -1,5 +1,9 @@
-# Pairwise Ranking Web
+# Pairwise Ranking Web App
+[<img src="./public/favicon.ico?raw=true&sanitize=true" height="45" width="45"/>  Click here to see a demo.](https://iamovrhere.github.io/pairwise-ranking-app/) **_(Incomplete)_**
 
+Icon modified from [OpenMoji Project (author Marius Schnabel)]( https://openmoji.org/library/#search=pear&emoji=1F350).
+
+## Background
 ["Pairwise Ranking" (wikipedia)](https://en.wikipedia.org/wiki/Pairwise_comparison) (sometimes called "Preference Ranking"), can be best described as taking a "divide and conquer" approach to prioritizing/ranking a set.
 
 In it we expand the comparisons into a every possible combination of 2, compare a pair, assign one a winner, and repeat. After we've assigned every possible pair a winner, we will have an aggregate of winners, where repeated winners gravitate to the top and losers to the bottom.
@@ -7,10 +11,6 @@ In it we expand the comparisons into a every possible combination of 2, compare 
 > L. L. Thurstone first introduced a scientific approach to using pairwise comparisons for measurement in 1927, which he referred to as the law of comparative judgment.
 
 This is intended as a simple web app to aggregate a preference list from input (using local storage to start), by simplifying to a simple A or B choice. The expected audience (aside from just myself), is someone with _minor_ technical understanding.
-
-[![Pairwise Pear](./public/favicon.ico) Click here to see a demo.](https://iamovrhere.github.io/pairwise-ranking-app/) **_(Incomplete)_**
-
-Icon modified from [OpenMoji Project (author Marius Schnabel)]( https://openmoji.org/library/#search=pear&emoji=1F350).
 
 ## Screenshots
 
@@ -138,4 +138,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/m
 ### Advanced Configuration
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
 
