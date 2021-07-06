@@ -7,7 +7,7 @@ SCRIPT_DIR=$(cd "$( dirname "$0" )" && pwd)
 APP="pairwise-ranking-app"
 DST_DIR="$SCRIPT_DIR/../iamovrhere.github.io/$APP"
 
-PUBLIC_URL="https://iamovrhere.github.io/$APP/" yarn build
+PUBLIC_URL="/$APP/" yarn build
 rm -rf $DST_DIR/*
 cp -r build/* $DST_DIR/
 

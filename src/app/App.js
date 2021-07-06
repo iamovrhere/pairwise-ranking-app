@@ -20,7 +20,7 @@ function App() {
       <div className="app">
         <div className="app-body">
           <ThemeProvider theme={AppTheme}>
-            <Router>
+            <Router basename={process.env.PUBLIC_URL}>
               <Switch>
                 {
                   routeList.map(({ path, component }) => (

@@ -18,8 +18,8 @@ const SEPARATOR = '    ';
 function EditProfileComponent({ history }) {
   const { state, dispatch } = React.useContext(ProfileContext);
   console.log(state);
-  const [titleText, setTitleText] = React.useState(null);
-  const [listText, setListText] = React.useState(null);
+  const [titleText, setTitleText] = React.useState('');
+  const [listText, setListText] = React.useState('');
 
   // TODO TRANSLATIONS
   const listLabel = 'List of comparable items';
@@ -71,7 +71,7 @@ function EditProfileComponent({ history }) {
         onClick={() => {
           const list = listText.split('\n').map((row) => {
             const [title, image] = row.split(SEPARATOR);
-            return { title: title.trim(), image: image.trim() };
+            return { title, image };
           }).filter(({ title, image }) => title || image);
           console.log(list);
           // TODO actual profile.

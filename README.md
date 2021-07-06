@@ -81,7 +81,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 Usage:
 ```
-PUBLIC_URL="http://localhost/public_html/pairwise-ranking-app/" yarn build
+PUBLIC_URL="/public_html/pairwise-ranking-app/" yarn build
 ```
 
 Builds the app for production to the `build` folder. Provides the commit hash on the page.
