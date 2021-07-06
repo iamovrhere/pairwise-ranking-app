@@ -1,7 +1,12 @@
 import React from 'react';
+import {
+  state as profileState,
+  dispatch as profileDispatch
+} from './Profile';
 
 export const AppContext = React.createContext();
 
+// TODO clean up the profile vs. Profile.js
 const PROFILE_ADD = 'PROFILE/ADD';
 const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 

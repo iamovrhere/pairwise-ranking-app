@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { AppContext } from 'contexts/App';
+import { ProfileContext } from 'contexts/Profile';
 import {
   GetStartedMessage,
   ListContainer,
@@ -21,19 +21,19 @@ import {
 } from 'components/common/common.style';
 
 function RowComponent(props) {
-  const { id, name, date, progress, totalComparisons } = props;
+  const { id, name, dateTime, progress, totalComparisons } = props;
 
   return (
     <ListItem button key={id}>
       <ListItemText
-        primary={`${name} ${id}`}
+        primary={name}
         secondary={
           <ListItemSecondaryText>
             <span>{
               `${progress}/${totalComparisons} ` +
               `(${Math.round(progress / totalComparisons * 100)}%)`
             }</span>
-            <span>{new Date(date).toLocaleString()}</span>
+            <span>{new Date(dateTime).toLocaleString()}</span>
           </ListItemSecondaryText>
         }
 
@@ -46,17 +46,17 @@ function RowComponent(props) {
 RowComponent.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  date: PropTypes.number.isRequired,
+  dateTime: PropTypes.number.isRequired,
   progress: PropTypes.number.isRequired,
   totalComparisons: PropTypes.number.isRequired,
 };
 
 function SelectProfileComponent({ history }) {
-  const { state, dispatch } = React.useContext(AppContext);
+  const { state } = React.useContext(ProfileContext);
   const { profiles } = state;
   const classes = useListStyles();
 
-  const emptyList = 'Create a profile to get started';
+  const emptyList = `Create a profile to get started (UI demo only)`;
   return (
     <>
       <ListContainer>
@@ -65,13 +65,14 @@ function SelectProfileComponent({ history }) {
             (
               <List className={classes.root}>
                 {
-                  profiles.map(({ name, key }) => (
+                  profiles.map(({ name, id, dateTime, pairs }) => (
                     <RowComponent
-                      id={key}
+                      key={id}
+                      id={id}
                       name={name}
-                      date={new Date().getTime()}
+                      dateTime={dateTime}
                       progress={10}
-                      totalComparisons={200}
+                      totalComparisons={pairs.length}
                     />
                   ))
                 }

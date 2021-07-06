@@ -1,5 +1,5 @@
 import React from 'react';
-import { addProfile, AppContext } from 'contexts/App';
+import { addProfile, ProfileContext } from 'contexts/Profile';
 import { viewProfileList, goBackOrHome } from 'app/routes';
 import {
   PrimaryButton,
@@ -12,20 +12,27 @@ import {
   ProfileName,
 } from './EditProfile.style';
 
+// 4 spaces, because tabs are difficult in browsers.
+const SEPARATOR = '    ';
+
 function EditProfileComponent({ history }) {
-  const { state, dispatch } = React.useContext(AppContext);
+  const { state, dispatch } = React.useContext(ProfileContext);
   console.log(state);
+  const [titleText, setTitleText] = React.useState(null);
+  const [listText, setListText] = React.useState(null);
 
   // TODO TRANSLATIONS
   const listLabel = 'List of comparable items';
-  const listPlaceholder = '"Item 1"    [Optional: <tab> Image-URL]\n' +
-    '"Item 2"    [Optional: <tab> Image-URL]\n' +
-    '"Item 3"    [Optional: <tab> Image-URL]\n' +
+  const listPlaceholder = '"Item 1"    [Optional: <4-spaces> Image-URL]\n' +
+    '"Item 2"    [Optional: <4-spaces> Image-URL]\n' +
+    '"Item 3"    [Optional: <4-spaces> Image-URL]\n' +
+    '\n\n' +
+    'Recommended for lists under 500 (249,001 comparisons)\n' +
     '...';
   const listMin = 10;
   const listMax = 20;
 
-  const profileNameLabel = "Profile Name";
+  const profileNameLabel = "List Name";
   const profileNamePlaceholder = "What's the name of this Profile?";
 
 
@@ -38,6 +45,9 @@ function EditProfileComponent({ history }) {
           placeholder={profileNamePlaceholder}
           helperText=""
           variant="outlined"
+          onChange={(e) => {
+            setTitleText(e.target.value);
+          }}
         />
         <ListTextArea
           aria-label={listLabel}
@@ -47,6 +57,9 @@ function EditProfileComponent({ history }) {
           rowsMax={listMax}
           variant="outlined"
           placeholder={listPlaceholder}
+          onChange={(e) => {
+            setListText(e.target.value);
+          }}
         />
       </ProfileCard>
       <CancelButton
@@ -56,11 +69,17 @@ function EditProfileComponent({ history }) {
       </CancelButton>
       <PrimaryButton
         onClick={() => {
+          const list = listText.split('\n').map((row) => {
+            const [title, image] = row.split(SEPARATOR);
+            return { title: title.trim(), image: image.trim() };
+          }).filter(({ title, image }) => title || image);
+          console.log(list);
           // TODO actual profile.
-          dispatch(addProfile('foobar', new Date().getTime()));
+          dispatch(addProfile(titleText, list));
           // TODO push to next.
           history.push(viewProfileList);
         }}
+        disabled={!listText.trim() || !titleText.trim()}
       >
         Save
       </PrimaryButton>
