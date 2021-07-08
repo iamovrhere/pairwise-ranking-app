@@ -19,7 +19,7 @@ const ResultTableCellComponent = ({
   const outRow = { ...row, rank };
   const { id, numeric } = headCell;
   const isName = id === 'name';
-  const isImg = id === 'img';
+  const isImg = id === 'image';
   // We want name to be the field to grow.
   const width = isName ? null :
     (isImg ? 100 : 30);
@@ -34,8 +34,8 @@ const ResultTableCellComponent = ({
     >
       {
         isImg ?
-          (outRow.img && <RowImage
-            src={outRow.img}
+          (outRow.image && <RowImage
+            src={outRow.image}
             alt={outRow.name}
           />) :
           outRow[id]
@@ -54,7 +54,7 @@ ResultTableCellComponent.propTypes = {
   row: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    img: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
     score: PropTypes.number.isRequired,
   }),
   labelId: PropTypes.string.isRequired,
@@ -85,7 +85,7 @@ const ResultTableRowComponent = ({
 }) => {
   const rankOffset = rankRange.start;
   const rankValueRange = rankRange.end - rankRange.start;
-  const scorePercent = row.score / maxScore;
+  const scorePercent = row.score / maxScore || 0;
   const rank = rankValueRange * scorePercent + rankOffset;
   const fixedDecimal = 2;
   const rankRounded = Math.round((rank + Number.EPSILON) * 100) / 100;
@@ -128,7 +128,7 @@ ResultTableRowComponent.propTypes = {
   row: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    img: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
     score: PropTypes.number.isRequired,
   }),
   labelId: PropTypes.string.isRequired,

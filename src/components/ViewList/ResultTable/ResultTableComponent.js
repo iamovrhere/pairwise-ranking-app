@@ -49,7 +49,7 @@ function stableSort(array, comparator) {
   * id: string,
   * rank: number,
   * name: string,
-  * img: string,
+  * image: string,
   * score: number }} TableData
   */
 
@@ -57,13 +57,13 @@ function stableSort(array, comparator) {
  * Helps define data structure.
  *
  * @param {string} name
- * @param {string} img
+ * @param {string} image
  * @param {number} score
  * @param {string} id Will be used later when actions are added.
  * @return {TableData}
  */
-export function createRowData(name, img, score, id = '') {
-  return { id, name, img, score };
+export function createRowData(name, image, score, id = '') {
+  return { id, name, image, score };
 }
 
 /**
@@ -72,7 +72,7 @@ export function createRowData(name, img, score, id = '') {
  */
 const headCells = [
   { id: 'score', numeric: true, disablePadding: true, label: 'Score', sortable: true },
-  { id: 'img', numeric: false, disablePadding: false, label: 'Image', sortable: false },
+  { id: 'image', numeric: false, disablePadding: false, label: 'Image', sortable: false },
   { id: 'name', numeric: false, disablePadding: true, label: 'Name', sortable: true },
   { id: 'rank', numeric: true, disablePadding: false, label: 'Rank', sortable: false },
 ];
@@ -228,7 +228,7 @@ EnhancedTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    img: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
     score: PropTypes.number.isRequired,
   })),
   maxScore: PropTypes.number.isRequired,

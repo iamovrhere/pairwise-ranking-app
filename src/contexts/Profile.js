@@ -1,4 +1,5 @@
 import React from 'react';
+import { createSelector } from 'reselect'
 
 export const ProfileContext = React.createContext();
 
@@ -7,14 +8,18 @@ export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 
 /**
  * The individual units that are being compared.
- * @typedef {{title: string, image: string}} ComparisonItem
+ * @typedef {{
+ * name: string,
+ * image: string
+ * }} ComparisonItem
  */
 
 /**
 * The individual units that are being compared, with meta-data.
 *
 * @typedef {{
-* title: string,
+* id: string,
+* name: string,
 * image: string,
 * score: number
 * }} ProcessedComparisonItem
@@ -22,24 +27,26 @@ export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 
 /**
  * A voting pair to compare against each other.
- * Default for `voted` is `false`, string value is winner.
+ * Default for `winner` is `false`, string value is winner.
  *
  * @typedef {{
  *  left: {title: string, image: string},
  *  right: {title: string, image: string},
- *  voted: string|boolean
+ *  winner: string|boolean
  * }} VotingPair
  */
 
 /**
 * Profile items as they appear in the profiles map.
+* Where the `pairs` are "to be voted" and `voted` past pairs.
 *
 * @typedef {{
  *   id: string,
  *   name: string,
  *   list: [ProcessedComparisonItem],
  *   dateTime: number,
- *   pairs: [VotingPair]
+ *   pairs: [VotingPair],
+ *   voted: [VotingPair],
  * }} ProfileItem
  */
 
@@ -52,11 +59,11 @@ export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
  * @return {[VotingPair]}
  */
 const createPairs = (item, list) => list.reduce((pairList, pairItem) => {
-  if (item.title !== pairItem.title) {
+  if (item.name !== pairItem.name) {
     pairList.push({
       left: item,
       right: pairItem,
-      voted: false
+      winner: false
     });
   }
   return pairList;
@@ -73,15 +80,19 @@ const createPairList = list => list.reduce((result, item) =>
   result.concat(createPairs(item, list)), []);
 
 /**
- * Removes all duplicates based on the name.
+ * Removes all duplicates based on the name. Adds score + id.
  *
  * @param {[ComparisonItem]} list
- * @return {[ComparisonItem]}
+ * @return {[ProcessedComparisonItem]}
  */
-const uniqueByTitles = list => Object.values(
-  list.reduce((titleMap, item) => {
-    titleMap[item.title] = item;
-    return titleMap;
+const uniqueByName = list => Object.values(
+  list.reduce((nameMap, item) => {
+    nameMap[item.name] = {
+      ...item,
+      id: item.name,
+      score: 0,
+    };
+    return nameMap;
   }, {})
 ).sort();
 
@@ -137,6 +148,21 @@ export const getCurrentProfile = state => ({
   id: state.currentProfile
 });
 
+/**
+ * @return {number} The length of comparisons or 1 (to prevent NaN/Infinity).
+ */
+export const getTotalComparisons = createSelector(
+  getCurrentProfile,
+  profile => (profile.pairs.length + profile.voted.length)
+);
+
+/**
+ * @return {number}
+ */
+export const getProgress = createSelector(
+  getCurrentProfile,
+  profile => profile.voted.length
+);
 
 /**
  * The profile state with keys for each id.
@@ -167,7 +193,7 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case PROFILE_ADD:
-      const uniqList = uniqueByTitles(action.data.list);
+      const uniqList = uniqueByName(action.data.list);
       let newProfileId = generateNewKey(action.data.name);
       let safetyCheck = 100;
 
@@ -185,7 +211,8 @@ function reducer(state, action) {
         ...action.data,
         list: uniqList,
         dateTime: new Date().getTime(),
-        pairs: createPairList(uniqList)
+        pairs: createPairList(uniqList),
+        voted: []
       };
 
       return {

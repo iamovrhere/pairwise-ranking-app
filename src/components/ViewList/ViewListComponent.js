@@ -1,7 +1,9 @@
 import React from 'react';
 import {
   ProfileContext,
-  getCurrentProfile
+  getCurrentProfile,
+  getProgress,
+  getTotalComparisons
 } from 'contexts/Profile';
 import { selectProfileRoute, voteOnPairs } from 'app/routes';
 import {
@@ -40,7 +42,7 @@ const maxScore = 9877;
 const defaultOrderBy = 'score';
 const defaultOrder = 'desc';
 
-const resultsStartTitle = '(Ready to start)';
+const resultsStartTitle = ': Ready to start!';
 const resultsPartial = '(Partial)';
 const resultsFinal = '(Results)';
 
@@ -48,8 +50,8 @@ function ViewListComponent({ history }) {
   // TODO move to the application state.
   const { state } = React.useContext(ProfileContext);
   const profile = getCurrentProfile(state);
-  const progress = 0;
-  const totalComparisons = profile.pairs.length;
+  const progress = getProgress(state);
+  const totalComparisons = getTotalComparisons(state);
 
   const resultsTitleSuffix = progress ?
     (progress >= totalComparisons ? resultsFinal : resultsPartial) :
@@ -75,7 +77,7 @@ function ViewListComponent({ history }) {
       </ProgressContainer>
 
       <ResultTable
-        rows={rows}
+        rows={profile.list}
         maxScore={maxScore}
         defaultOrderBy={defaultOrderBy}
         defaultOrder={defaultOrder}

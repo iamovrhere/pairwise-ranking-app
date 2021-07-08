@@ -73,9 +73,9 @@ function EditProfileComponent({ history }) {
       <PrimaryButton
         onClick={() => {
           const list = listText.split('\n').map((row) => {
-            const [title, image] = row.split(SEPARATOR);
-            return { title, image };
-          }).filter(({ title, image }) => title || image);
+            const [name, image] = row.split(SEPARATOR);
+            return { name, image };
+          }).filter(({ name, image }) => name || image);
           console.log(list);
           // TODO actual profile.
           dispatch(addProfile(titleText, list));

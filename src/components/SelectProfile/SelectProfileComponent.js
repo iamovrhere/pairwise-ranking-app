@@ -72,14 +72,14 @@ function SelectProfileComponent({ history }) {
             (
               <List className={classes.root}>
                 {
-                  profiles.map(({ name, id, dateTime, pairs }) => (
+                  profiles.map(({ name, id, dateTime, pairs, voted }) => (
                     <RowComponent
                       key={id}
                       id={id}
                       name={name}
                       dateTime={dateTime}
-                      progress={10}
-                      totalComparisons={pairs.length}
+                      progress={voted.length}
+                      totalComparisons={pairs.length + voted.length || 1}
                       onClick={() => {
                         dispatch(setCurrentProfile(id));
                         history.push(viewProfileList);
