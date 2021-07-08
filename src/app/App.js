@@ -7,14 +7,10 @@ import {
 import { } from 'react-transition-group';
 import { ThemeProvider } from '@material-ui/core/styles';
 import './App.css';
-import { AppContext } from 'contexts/App';
 import { routeList } from './routes';
 import { AppTheme } from 'components/common/common.style';
 
 function App() {
-  const { state, dispatch } = React.useContext(AppContext);
-  console.log(state);
-
   return (
     <>
       <div className="app">

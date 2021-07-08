@@ -1,4 +1,8 @@
 import React from 'react';
+import {
+  ProfileContext,
+  getCurrentProfile
+} from 'contexts/Profile';
 import { selectProfileRoute, voteOnPairs } from 'app/routes';
 import {
   PrimaryButton,
@@ -36,18 +40,21 @@ const maxScore = 9877;
 const defaultOrderBy = 'score';
 const defaultOrder = 'desc';
 
-const resultsStartTitle = 'Ready to start';
-const resultsPartial = 'Partial Results';
-const resultsFinal = 'Final Results';
+const resultsStartTitle = '(Ready to start)';
+const resultsPartial = '(Partial)';
+const resultsFinal = '(Results)';
 
 function ViewListComponent({ history }) {
   // TODO move to the application state.
-  const progress = 1;
-  const totalComparisons = 100;
+  const { state } = React.useContext(ProfileContext);
+  const profile = getCurrentProfile(state);
+  const progress = 0;
+  const totalComparisons = profile.pairs.length;
 
-  const resultsTitle = progress ?
+  const resultsTitleSuffix = progress ?
     (progress >= totalComparisons ? resultsFinal : resultsPartial) :
     resultsStartTitle;
+  const resultsTitle = `${profile.name} ${resultsTitleSuffix}`;
 
   return (
     <ListContainer>

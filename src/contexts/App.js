@@ -1,8 +1,4 @@
 import React from 'react';
-import {
-  state as profileState,
-  dispatch as profileDispatch
-} from './Profile';
 
 export const AppContext = React.createContext();
 

@@ -3,6 +3,7 @@ import React from 'react';
 export const ProfileContext = React.createContext();
 
 export const PROFILE_ADD = 'PROFILE/ADD';
+export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 
 /**
  * The individual units that are being compared.
@@ -28,6 +29,18 @@ export const PROFILE_ADD = 'PROFILE/ADD';
  *  right: {title: string, image: string},
  *  voted: string|boolean
  * }} VotingPair
+ */
+
+/**
+* Profile items as they appear in the profiles map.
+*
+* @typedef {{
+ *   id: string,
+ *   name: string,
+ *   list: [ProcessedComparisonItem],
+ *   dateTime: number,
+ *   pairs: [VotingPair]
+ * }} ProfileItem
  */
 
 /**
@@ -60,8 +73,10 @@ const createPairList = list => list.reduce((result, item) =>
   result.concat(createPairs(item, list)), []);
 
 /**
+ * Removes all duplicates based on the name.
  *
  * @param {[ComparisonItem]} list
+ * @return {[ComparisonItem]}
  */
 const uniqueByTitles = list => Object.values(
   list.reduce((titleMap, item) => {
@@ -70,10 +85,9 @@ const uniqueByTitles = list => Object.values(
   }, {})
 ).sort();
 
-
 /**
  * @param {string} name
- * @return {string} New pseudo-random key
+ * @return {string} Pseudo-random key of the form ${10CharName}_${getTime()}_${random32Num}
  */
 const generateNewKey = (name) =>
   `${name.substring(0, 10)}_` +
@@ -94,15 +108,47 @@ export const addProfile = (name, list) => ({
 });
 
 /**
- * Base store.
+ *
+ * @param {string} name
+ * @param {[ComparisonItem]} list
+ */
+export const setCurrentProfile = (id) => ({
+  type: PROFILE_SET_CURRENT,
+  data: {
+    id
+  }
+});
+
+/**
+ * @param {ProfileState} state
+ * @returns {[ProfileItem]}
+ */
+export const getProfiles = state => Object.keys(state.profiles).map((id) => ({
+  ...state.profiles[id],
+  id
+}));
+
+/**
+ * @param {ProfileState} state
+ * @returns {ProfileItem}
+ */
+export const getCurrentProfile = state => ({
+  ...state.profiles[state.currentProfile],
+  id: state.currentProfile
+});
+
+
+/**
+ * The profile state with keys for each id.
+ *
  * @typedef {{
-  currentProfile: null,
-  profiles: {{name: string, id: string}}
-  * }} BaseState
-  */
+ * currentProfile: string | null,
+ * profiles: {$id: Profile}
+ * }} ProfileState
+ */
 const initialState = {
   currentProfile: null,
-  profiles: []
+  profiles: {}
 };
 
 /**
@@ -121,18 +167,42 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case PROFILE_ADD:
-      const newList = uniqueByTitles(action.data.list);
-      const newProfile = {
+      const uniqList = uniqueByTitles(action.data.list);
+      let newProfileId = generateNewKey(action.data.name);
+      let safetyCheck = 100;
+
+      // Guarantee uniqueness.
+      while (state.profiles[newProfileId]) {
+        if (safetyCheck--) {
+          newProfileId = generateNewKey(action.data.name);
+        } else {
+          console.warn('Failed uniqueness 100 times! Play the lottery?')
+          break;
+        }
+      }
+
+      state.profiles[newProfileId] = {
         ...action.data,
-        list: newList,
-        id: generateNewKey(action.data.name),
+        list: uniqList,
         dateTime: new Date().getTime(),
-        pairs: createPairList(newList)
+        pairs: createPairList(uniqList)
       };
 
       return {
         ...state,
-        profiles: [...state.profiles, newProfile]
+        currentProfile: newProfileId,
+        profiles: {
+          ...state.profiles
+        }
+      };
+    case PROFILE_SET_CURRENT:
+      const currentProfileId = action.data.id;
+      if (!state.profiles[currentProfileId]) {
+        throw new Error(`Invalid profile supplied: '${currentProfileId}'`)
+      }
+      return {
+        ...state,
+        currentProfile: currentProfileId
       };
     default:
       return state;

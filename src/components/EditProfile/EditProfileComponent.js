@@ -1,5 +1,8 @@
 import React from 'react';
-import { addProfile, ProfileContext } from 'contexts/Profile';
+import {
+  ProfileContext,
+  addProfile
+} from 'contexts/Profile';
 import { viewProfileList, goBackOrHome } from 'app/routes';
 import {
   PrimaryButton,

@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ProfileContext } from 'contexts/Profile';
+import {
+  ProfileContext,
+  getProfiles,
+  setCurrentProfile
+} from 'contexts/Profile';
 import {
   GetStartedMessage,
   ListContainer,
@@ -8,7 +12,8 @@ import {
   useListStyles,
 } from './SelectProfile.style';
 import {
-  editProfileRoute
+  editProfileRoute,
+  viewProfileList
 } from 'app/routes';
 import {
   List,
@@ -21,10 +26,10 @@ import {
 } from 'components/common/common.style';
 
 function RowComponent(props) {
-  const { id, name, dateTime, progress, totalComparisons } = props;
+  const { id, name, dateTime, progress, totalComparisons, onClick } = props;
 
   return (
-    <ListItem button key={id}>
+    <ListItem button key={id} onClick={onClick}>
       <ListItemText
         primary={name}
         secondary={
@@ -49,12 +54,14 @@ RowComponent.propTypes = {
   dateTime: PropTypes.number.isRequired,
   progress: PropTypes.number.isRequired,
   totalComparisons: PropTypes.number.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 function SelectProfileComponent({ history }) {
-  const { state } = React.useContext(ProfileContext);
-  const { profiles } = state;
+  const { state, dispatch } = React.useContext(ProfileContext);
+  const profiles = getProfiles(state);
   const classes = useListStyles();
+
 
   const emptyList = `Create a profile to get started (UI demo only)`;
   return (
@@ -73,6 +80,10 @@ function SelectProfileComponent({ history }) {
                       dateTime={dateTime}
                       progress={10}
                       totalComparisons={pairs.length}
+                      onClick={() => {
+                        dispatch(setCurrentProfile(id));
+                        history.push(viewProfileList);
+                      }}
                     />
                   ))
                 }
