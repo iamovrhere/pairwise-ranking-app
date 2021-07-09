@@ -25,14 +25,13 @@
  * @typedef {{
  *  left: ComparisonCandidate,
  *  right: ComparisonCandidate,
- *  winner: string|null,
  *  skipped: number,
  * }} VotingPair
  */
 
 /**
 * Profile items as they appear in the profiles map.
-* Where the `pairs` are "to be voted" and `voted` past pairs.
+* Where the `pairs` are "to be voted".
 *
 * @typedef {{
  *   id: string,
@@ -40,7 +39,7 @@
  *   list: Object.<string, ComparisonCandidate>,
  *   dateTime: number,
  *   pairs: Object.<string, VotingPair>,
- *   voted: Object.<string, VotingPair>,
+ *   totalComparisons: number
  * }} ProfileItem
  */
 

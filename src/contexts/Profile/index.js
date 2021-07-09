@@ -1,23 +1,25 @@
 import React from 'react';
 import { createSelector } from 'reselect'
-import { generateNewKey } from 'lib';
-import { createNameMap, createPairMap } from './ProfileStructure';
+import {
+  PROFILE_ADD,
+  PROFILE_SET_CURRENT,
+  PAIR_VOTE,
+  PAIR_SKIP
+} from './actions';
+import { reducer } from './reducers';
 
 /**
  * @typedef {import('./ProfileStructure').ComparisonRow} ComparisonRow
  * @typedef {import('./ProfileStructure').ComparisonCandidate} ComparisonCandidate
  * @typedef {import('./ProfileStructure').ProfileItem} ProfileItem
  * @typedef {import('./ProfileStructure').VotingPair} VotingPair
+ * @typedef {import('./reducer').ProfileState} ProfileState
+ * @typedef {import('./reducer').Action} Action
  */
-
-export const ProfileContext = React.createContext();
 
 /////////////////////////////////////////////////////////////////////////
 // Actions
 /////////////////////////////////////////////////////////////////////////
-
-export const PROFILE_ADD = 'PROFILE/ADD';
-export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 
 /**
  *
@@ -40,6 +42,30 @@ export const setCurrentProfile = (id) => ({
   type: PROFILE_SET_CURRENT,
   data: {
     id
+  }
+});
+
+/**
+ *
+ * @param {string} pairId
+ * @param {string} winnerListId
+ */
+export const voteWinner = (pairId, winnerListId) => ({
+  type: PAIR_VOTE,
+  data: {
+    pairId,
+    winnerListId
+  }
+});
+
+/**
+ *
+ * @param {string} pairId
+ */
+export const skipPair = (pairId) => ({
+  type: PAIR_SKIP,
+  data: {
+    pairId
   }
 });
 
@@ -66,17 +92,9 @@ export const getCurrentProfile = state => state.currentProfile ? ({
 /**
  * @return {[[string, VotingPair]]} Array of key + VotingPairs.
  */
-export const getPairsEntries = createSelector(
+export const getPairEntries = createSelector(
   getCurrentProfile,
   profile => Object.entries(profile.pairs)
-);
-
-/**
- * @return {[[string, VotingPair]]} Array of key + VotingPairs.
- */
-export const getVotedEntries = createSelector(
-  getCurrentProfile,
-  profile => Object.entries(profile.voted)
 );
 
 /**
@@ -102,98 +120,37 @@ export const getMaxScore = createSelector(
  * @return {number} The length of comparisons or 1 (to prevent NaN/Infinity).
  */
 export const getTotalComparisons = createSelector(
-  getPairsEntries,
-  getVotedEntries,
-  (pairs, voted) => (pairs.length + voted.length || 1)
+  getCurrentProfile,
+  (profile) => (profile.totalComparisons || 1)
 );
 
 /**
  * @return {number}
  */
 export const getProgress = createSelector(
-  getVotedEntries,
-  voted => voted.length
+  getPairEntries,
+  getTotalComparisons,
+  (pairs, total) => total - pairs.length
 );
 
-/////////////////////////////////////////////////////////////////////////
-// Reducer
-/////////////////////////////////////////////////////////////////////////
 
 /**
- * The profile state with keys for each id.
- *
- * @typedef {{
- * currentProfile: string | null,
- * profiles: Object.<string, Profile>
- * }} ProfileState
- */
+* The profile state with keys for each id.
+*
+* @typedef {{
+  * currentProfile: string | null,
+  * profiles: Object.<string, ProfileItem>
+  * }} ProfileState
+  */
 const initialState = {
   currentProfile: null,
   profiles: {}
 };
 
-/**
- * React reducer action.
- * @typedef {{
- *  type: string, data: any
- * }} Action
- */
+export const ProfileContext = React.createContext();
 
 /**
- *
- * @param {initialState} state
- * @param {Action} action
- * @return {initialState}
- */
-function reducer(state, action) {
-  switch (action.type) {
-    case PROFILE_ADD:
-      const nameMap = createNameMap(action.data.list);
-      let newProfileId = generateNewKey(action.data.name);
-      let safetyCheck = 100;
-
-      // Guarantee uniqueness.
-      while (state.profiles[newProfileId]) {
-        if (safetyCheck--) {
-          newProfileId = generateNewKey(action.data.name);
-        } else {
-          console.error('Failed uniqueness 100 times! Play the lottery?')
-          break;
-        }
-      }
-
-      state.profiles[newProfileId] = {
-        ...action.data,
-        list: nameMap,
-        dateTime: new Date().getTime(),
-        pairs: createPairMap(nameMap),
-        voted: {}
-      };
-
-      return {
-        ...state,
-        currentProfile: newProfileId,
-        profiles: {
-          ...state.profiles
-        }
-      };
-    case PROFILE_SET_CURRENT:
-      const currentProfileId = action.data.id;
-      if (!state.profiles[currentProfileId]) {
-        throw new Error(`Invalid profile supplied: '${currentProfileId}'`)
-      }
-      return {
-        ...state,
-        currentProfile: currentProfileId
-      };
-    default:
-      return state;
-  }
-}
-
-
-/**
- * @returns {{ state: initialState, dispatch: (Action) => {}}}
+ * @returns {{ state: ProfileState, dispatch: (Action) => {}}}
  */
 export function ProfileProvider(props) {
   const [state, dispatch] = React.useReducer(reducer, initialState);

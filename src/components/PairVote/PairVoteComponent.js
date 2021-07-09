@@ -46,11 +46,12 @@ function PairVoteComponent({ history }) {
   // TODO move to the application state.
   const { state, dispatch } = React.useContext(ProfileContext);
   const profile = getCurrentProfile(state);
+  const progress = getProgress(state);
+  const totalComparisons = getTotalComparisons(state);
 
   const reverseOrder = flipCoin();
   const [orClickCount, setOrClickCount] = React.useState(0);
   const [skippedTimes, setSkippedTimes] = React.useState(0);
-  const [progress, setProgress] = React.useState(0);
   const [ballotValues, setBallotValues] = React.useState([
     generateCard(),
     generateCard()
@@ -65,10 +66,7 @@ function PairVoteComponent({ history }) {
   const skippedPhrase = skippedTimes === 1 ?
     `1 time` : `${skippedTimes} times`;
 
-  const totalComparisons = 200;
-
   const castTheVote = id => {
-    setProgress(progress + 1);
     setBallotValues([
       generateCard(),
       generateCard()

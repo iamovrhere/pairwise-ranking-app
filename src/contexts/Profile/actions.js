@@ -1,0 +1,4 @@
+export const PROFILE_ADD = 'PROFILE/ADD';
+export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
+export const PAIR_VOTE = 'PROFILE/PAIR/WINNER'
+export const PAIR_SKIP = 'PROFILE/PAIR/SKIP'

@@ -62,7 +62,7 @@ function SelectProfileComponent({ history }) {
   const profiles = getProfiles(state);
   const classes = useListStyles();
 
-  const emptyList = `Create a profile to get started (UI demo only)`;
+  const emptyList = `Create a profile to get started (no local storage yet)`;
   return (
     <>
       <ListContainer>
@@ -71,9 +71,8 @@ function SelectProfileComponent({ history }) {
             (
               <List className={classes.root}>
                 {
-                  profiles.map(({ name, id, dateTime, pairs, voted }) => {
-                    const progress = Object.keys(voted).length;
-                    const total = progress + Object.keys(pairs).length;
+                  profiles.map(({ name, id, dateTime, pairs, totalComparisons }) => {
+                    const progress = totalComparisons - Object.keys(pairs).length;
                     return (
                       <RowComponent
                         key={id}
@@ -81,7 +80,7 @@ function SelectProfileComponent({ history }) {
                         name={name}
                         dateTime={dateTime}
                         progress={progress}
-                        totalComparisons={total || 1}
+                        totalComparisons={totalComparisons}
                         onClick={() => {
                           dispatch(setCurrentProfile(id));
                           history.push(viewProfileList);
