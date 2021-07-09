@@ -62,7 +62,6 @@ function SelectProfileComponent({ history }) {
   const profiles = getProfiles(state);
   const classes = useListStyles();
 
-
   const emptyList = `Create a profile to get started (UI demo only)`;
   return (
     <>
@@ -72,20 +71,24 @@ function SelectProfileComponent({ history }) {
             (
               <List className={classes.root}>
                 {
-                  profiles.map(({ name, id, dateTime, pairs, voted }) => (
-                    <RowComponent
-                      key={id}
-                      id={id}
-                      name={name}
-                      dateTime={dateTime}
-                      progress={voted.length}
-                      totalComparisons={pairs.length + voted.length || 1}
-                      onClick={() => {
-                        dispatch(setCurrentProfile(id));
-                        history.push(viewProfileList);
-                      }}
-                    />
-                  ))
+                  profiles.map(({ name, id, dateTime, pairs, voted }) => {
+                    const progress = Object.keys(voted).length;
+                    const total = progress + Object.keys(pairs).length;
+                    return (
+                      <RowComponent
+                        key={id}
+                        id={id}
+                        name={name}
+                        dateTime={dateTime}
+                        progress={progress}
+                        totalComparisons={total || 1}
+                        onClick={() => {
+                          dispatch(setCurrentProfile(id));
+                          history.push(viewProfileList);
+                        }}
+                      />
+                    );
+                  })
                 }
               </List>
             ) :

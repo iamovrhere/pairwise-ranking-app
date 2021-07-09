@@ -1,5 +1,15 @@
 import React from 'react';
-import { goBackOrHome } from 'app/routes';
+import {
+  goBackOrHome,
+  selectProfileRoute,
+} from 'app/routes';
+import {
+  ProfileContext,
+  getCurrentProfile,
+  getProgress,
+  getTotalComparisons
+} from 'contexts/Profile';
+import { flipCoin } from 'lib';
 import {
   OptionalButton,
   CancelButton
@@ -13,7 +23,7 @@ import {
   SkippedText,
 } from './PairVote.style';
 
-const flipCoin = () => Math.round(Math.random() * 2) % 2;
+
 // TODO replace with actual code that fetches the Card info.
 /**
  * @return {{id: string, image: string | null, title: string}}
@@ -34,6 +44,10 @@ const orClickThreshold = 20;
 
 function PairVoteComponent({ history }) {
   // TODO move to the application state.
+  const { state, dispatch } = React.useContext(ProfileContext);
+  const profile = getCurrentProfile(state);
+
+  const reverseOrder = flipCoin();
   const [orClickCount, setOrClickCount] = React.useState(0);
   const [skippedTimes, setSkippedTimes] = React.useState(0);
   const [progress, setProgress] = React.useState(0);
@@ -41,6 +55,12 @@ function PairVoteComponent({ history }) {
     generateCard(),
     generateCard()
   ]);
+
+  if (!profile) {
+    console.warn('Whoops! No profile selected!');
+    history.replace(selectProfileRoute);
+    return null;
+  }
 
   const skippedPhrase = skippedTimes === 1 ?
     `1 time` : `${skippedTimes} times`;

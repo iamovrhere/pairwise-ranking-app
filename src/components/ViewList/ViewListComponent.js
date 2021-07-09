@@ -2,10 +2,15 @@ import React from 'react';
 import {
   ProfileContext,
   getCurrentProfile,
+  getListValues,
+  getMaxScore,
   getProgress,
-  getTotalComparisons
+  getTotalComparisons,
 } from 'contexts/Profile';
-import { selectProfileRoute, voteOnPairs } from 'app/routes';
+import {
+  selectProfileRoute,
+  voteOnPairs
+} from 'app/routes';
 import {
   PrimaryButton,
   CancelButton
@@ -17,11 +22,9 @@ import {
 } from './ViewList.style';
 import ResultTable from './ResultTable'
 
-// TODO replace with real data.
-const maxScore = 9877;
-
 const defaultOrderBy = 'score';
 const defaultOrder = 'desc';
+const defaultRowCount = 25;
 
 const resultsStartTitle = ': Ready to start!';
 const resultsPartial = '(Partial)';
@@ -31,8 +34,17 @@ function ViewListComponent({ history }) {
   // TODO move to the application state.
   const { state } = React.useContext(ProfileContext);
   const profile = getCurrentProfile(state);
+
+  if (!profile) {
+    console.warn('Whoops! No profile selected!');
+    history.replace(selectProfileRoute);
+    return null;
+  }
+
   const progress = getProgress(state);
   const totalComparisons = getTotalComparisons(state);
+  const maxScore = getMaxScore(state);
+  const listRows = getListValues(state);
 
   const resultsTitleSuffix = progress ?
     (progress >= totalComparisons ? resultsFinal : resultsPartial) :
@@ -58,10 +70,11 @@ function ViewListComponent({ history }) {
       </ProgressContainer>
 
       <ResultTable
-        rows={profile.list}
+        rows={listRows}
         maxScore={maxScore}
         defaultOrderBy={defaultOrderBy}
         defaultOrder={defaultOrder}
+        defaultRowCount={defaultRowCount}
         title={resultsTitle}
       />
       <CancelButton

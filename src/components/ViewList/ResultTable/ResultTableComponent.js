@@ -54,19 +54,6 @@ function stableSort(array, comparator) {
   */
 
 /**
- * Helps define data structure.
- *
- * @param {string} name
- * @param {string} image
- * @param {number} score
- * @param {string} id Will be used later when actions are added.
- * @return {TableData}
- */
-export function createRowData(name, image, score, id = '') {
-  return { id, name, image, score };
-}
-
-/**
  * Correlates to `createRowData()`.
  * Ranks is calculated later.
  */
@@ -78,7 +65,6 @@ const headCells = [
 ];
 
 const rowsPerPageOptions = [10, 25, 100, 1000];
-const defaultRowsPerPage = 100;
 
 /**
  * Creates the enhanced table with sortable headers, defined order,
@@ -89,6 +75,7 @@ const defaultRowsPerPage = 100;
  *  headCells: [TableData],
  *  defaultOrder: string,
  *  defaultOrderBy: string,
+ *  defaultRowCount: number,
  *  maxScore: number
  * }} props
  */
@@ -98,6 +85,7 @@ export default function EnhancedTable(props) {
     rows,
     defaultOrderBy,
     defaultOrder,
+    defaultRowCount,
     maxScore
   } = props;
   const classes = useStyles();
@@ -105,7 +93,7 @@ export default function EnhancedTable(props) {
   const [orderBy, setOrderBy] = React.useState(defaultOrderBy);
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(defaultRowsPerPage);
+  const [rowsPerPage, setRowsPerPage] = React.useState(defaultRowCount);
   const [rankStart, setRankStart] = React.useState(1);
   const [rankEnd, setRankEnd] = React.useState(10);
 
@@ -236,5 +224,6 @@ EnhancedTable.propTypes = {
   defaultOrderBy: PropTypes.oneOf([
     'name', 'score'
   ]).isRequired,
+  defaultRowCount: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
 };

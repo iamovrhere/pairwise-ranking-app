@@ -1,10 +1,8 @@
 import React from 'react';
 import { createSelector } from 'reselect'
+import { generateNewKey } from 'lib';
 
 export const ProfileContext = React.createContext();
-
-export const PROFILE_ADD = 'PROFILE/ADD';
-export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 
 /**
  * The individual units that are being compared.
@@ -30,9 +28,10 @@ export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
  * Default for `winner` is `false`, string value is winner.
  *
  * @typedef {{
- *  left: {title: string, image: string},
- *  right: {title: string, image: string},
- *  winner: string|boolean
+ *  left: ProcessedComparisonItem,
+ *  right: ProcessedComparisonItem,
+ *  winner: string|null,
+ *  skipped: number,
  * }} VotingPair
  */
 
@@ -43,67 +42,72 @@ export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 * @typedef {{
  *   id: string,
  *   name: string,
- *   list: [ProcessedComparisonItem],
+ *   list: Object.<string, ProcessedComparisonItem>,
  *   dateTime: number,
- *   pairs: [VotingPair],
- *   voted: [VotingPair],
+ *   pairs: Object.<string, VotingPair>,
+ *   voted: Object.<string, VotingPair>,
  * }} ProfileItem
  */
 
 /**
  * This gives every combination between `item` and `list` (excluding itself).
- * The result is N -1.
+ * The result is n!/r!(n-r)!.
  *
- * @param {ComparisonItem} item
- * @param {[ComparisonItem]} list
+ * @param {[string, ComparisonItem]} param0
+ * @param {Object.<string, ProcessedComparisonItem>} list
+ * @param {Object.<string, ProcessedComparisonItem>} result
  * @return {[VotingPair]}
  */
-const createPairs = (item, list) => list.reduce((pairList, pairItem) => {
-  if (item.name !== pairItem.name) {
-    pairList.push({
-      left: item,
-      right: pairItem,
-      winner: false
-    });
-  }
-  return pairList;
-}, []);
+const createPairs = ([key, item], list, result) => Object.entries(list)
+  .reduce((pairMap, [secondKey, secondItem]) => {
+    const pairKey = `${key}${secondKey}`;
+    const invertedPairKey = `${secondKey}${key}`;
+    if (key !== secondKey && !result[invertedPairKey]) {
+      pairMap[pairKey] = {
+        left: item,
+        right: secondItem,
+        winner: null,
+        skipped: 0
+      };
+    }
+    return pairMap;
+  }, {});
 
 /**
  * This gives every combination between all items in `list`
- * (but not against themselves). The result is (N - 1)^2.
+ * but not against themselves & disregarding order.
+ * The result is  n!/r!(n-r)!.
  *
- * @param {[ComparisonItem]} list
+ * @param {Object.<string, ProcessedComparisonItem>} list
  * @return {[VotingPair]}
  */
-const createPairList = list => list.reduce((result, item) =>
-  result.concat(createPairs(item, list)), []);
+const createPairMap = list => Object.entries(list).reduce(
+  (result, item) => ({ ...result, ...createPairs(item, list, result) }),
+  {}
+);
 
 /**
  * Removes all duplicates based on the name. Adds score + id.
  *
  * @param {[ComparisonItem]} list
- * @return {[ProcessedComparisonItem]}
+ * @return {Object.<string, ProcessedComparisonItem>}
  */
-const uniqueByName = list => Object.values(
-  list.reduce((nameMap, item) => {
-    nameMap[item.name] = {
-      ...item,
-      id: item.name,
-      score: 0,
-    };
-    return nameMap;
-  }, {})
-).sort();
+const uniqueByName = list => list.reduce((nameMap, item) => {
+  const id = '_' + item.name;
+  nameMap[id] = {
+    ...item,
+    id,
+    score: 0,
+  };
+  return nameMap;
+}, {});
 
-/**
- * @param {string} name
- * @return {string} Pseudo-random key of the form ${10CharName}_${getTime()}_${random32Num}
- */
-const generateNewKey = (name) =>
-  `${name.substring(0, 10)}_` +
-  `${new Date().getTime()}_` +
-  `${Math.random().toString(36).substring(2, 4)}`;
+/////////////////////////////////////////////////////////////////////////
+// Actions
+/////////////////////////////////////////////////////////////////////////
+
+export const PROFILE_ADD = 'PROFILE/ADD';
+export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 
 /**
  *
@@ -120,8 +124,7 @@ export const addProfile = (name, list) => ({
 
 /**
  *
- * @param {string} name
- * @param {[ComparisonItem]} list
+ * @param {string} id
  */
 export const setCurrentProfile = (id) => ({
   type: PROFILE_SET_CURRENT,
@@ -130,46 +133,88 @@ export const setCurrentProfile = (id) => ({
   }
 });
 
+/////////////////////////////////////////////////////////////////////////
+// Selectors
+/////////////////////////////////////////////////////////////////////////
+
 /**
  * @param {ProfileState} state
  * @returns {[ProfileItem]}
  */
-export const getProfiles = state => Object.keys(state.profiles).map((id) => ({
-  ...state.profiles[id],
-  id
-}));
+export const getProfiles = state => Object.entries(state.profiles)
+  .map(([id, profile]) => ({ ...profile, id }));
 
 /**
  * @param {ProfileState} state
- * @returns {ProfileItem}
+ * @returns {ProfileItem|null} Null if no profile selected.
  */
-export const getCurrentProfile = state => ({
+export const getCurrentProfile = state => state.currentProfile ? ({
   ...state.profiles[state.currentProfile],
   id: state.currentProfile
-});
+}) : null;
+
+/**
+ * @return {[[string, VotingPair]]} Array of key + VotingPairs.
+ */
+export const getPairsEntries = createSelector(
+  getCurrentProfile,
+  profile => Object.entries(profile.pairs)
+);
+
+/**
+ * @return {[[string, VotingPair]]} Array of key + VotingPairs.
+ */
+export const getVotedEntries = createSelector(
+  getCurrentProfile,
+  profile => Object.entries(profile.voted)
+);
+
+/**
+ * @return {[ProcessedComparisonItem]}
+ */
+export const getListValues = createSelector(
+  getCurrentProfile,
+  profile => Object.values(profile.list)
+);
+
+/**
+ * @return {number} The max score for the current list.
+ */
+export const getMaxScore = createSelector(
+  getListValues,
+  listValues => listValues.reduce(
+    (max, item) => max < item.score ? item.score : max,
+    0
+  )
+);
 
 /**
  * @return {number} The length of comparisons or 1 (to prevent NaN/Infinity).
  */
 export const getTotalComparisons = createSelector(
-  getCurrentProfile,
-  profile => (profile.pairs.length + profile.voted.length)
+  getPairsEntries,
+  getVotedEntries,
+  (pairs, voted) => (pairs.length + voted.length || 1)
 );
 
 /**
  * @return {number}
  */
 export const getProgress = createSelector(
-  getCurrentProfile,
-  profile => profile.voted.length
+  getVotedEntries,
+  voted => voted.length
 );
+
+/////////////////////////////////////////////////////////////////////////
+// Reducer
+/////////////////////////////////////////////////////////////////////////
 
 /**
  * The profile state with keys for each id.
  *
  * @typedef {{
  * currentProfile: string | null,
- * profiles: {$id: Profile}
+ * profiles: Object.<string, Profile>
  * }} ProfileState
  */
 const initialState = {
@@ -193,7 +238,7 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case PROFILE_ADD:
-      const uniqList = uniqueByName(action.data.list);
+      const nameMap = uniqueByName(action.data.list);
       let newProfileId = generateNewKey(action.data.name);
       let safetyCheck = 100;
 
@@ -202,17 +247,17 @@ function reducer(state, action) {
         if (safetyCheck--) {
           newProfileId = generateNewKey(action.data.name);
         } else {
-          console.warn('Failed uniqueness 100 times! Play the lottery?')
+          console.error('Failed uniqueness 100 times! Play the lottery?')
           break;
         }
       }
 
       state.profiles[newProfileId] = {
         ...action.data,
-        list: uniqList,
+        list: nameMap,
         dateTime: new Date().getTime(),
-        pairs: createPairList(uniqList),
-        voted: []
+        pairs: createPairMap(nameMap),
+        voted: {}
       };
 
       return {

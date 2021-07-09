@@ -47,7 +47,7 @@ function EditProfileComponent({ history }) {
     '"Item 2"    [Optional: <4-spaces> Image-URL]\n' +
     '"Item 3"    [Optional: <4-spaces> Image-URL]\n' +
     '\n\n' +
-    'Recommended for lists under 500 (249,001 comparisons)\n' +
+    'Recommended for lists under 500 (124,750 comparisons)\n' +
     '...';
   const listMin = 10;
   const listMax = 20;
