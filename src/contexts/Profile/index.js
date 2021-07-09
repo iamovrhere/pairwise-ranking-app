@@ -1,106 +1,16 @@
 import React from 'react';
 import { createSelector } from 'reselect'
 import { generateNewKey } from 'lib';
+import { createNameMap, createPairMap } from './ProfileStructure';
+
+/**
+ * @typedef {import('./ProfileStructure').ComparisonRow} ComparisonRow
+ * @typedef {import('./ProfileStructure').ComparisonCandidate} ComparisonCandidate
+ * @typedef {import('./ProfileStructure').ProfileItem} ProfileItem
+ * @typedef {import('./ProfileStructure').VotingPair} VotingPair
+ */
 
 export const ProfileContext = React.createContext();
-
-/**
- * The individual units that are being compared.
- * @typedef {{
- * name: string,
- * image: string
- * }} ComparisonItem
- */
-
-/**
-* The individual units that are being compared, with meta-data.
-*
-* @typedef {{
-* id: string,
-* name: string,
-* image: string,
-* score: number
-* }} ProcessedComparisonItem
-*/
-
-/**
- * A voting pair to compare against each other.
- * Default for `winner` is `false`, string value is winner.
- *
- * @typedef {{
- *  left: ProcessedComparisonItem,
- *  right: ProcessedComparisonItem,
- *  winner: string|null,
- *  skipped: number,
- * }} VotingPair
- */
-
-/**
-* Profile items as they appear in the profiles map.
-* Where the `pairs` are "to be voted" and `voted` past pairs.
-*
-* @typedef {{
- *   id: string,
- *   name: string,
- *   list: Object.<string, ProcessedComparisonItem>,
- *   dateTime: number,
- *   pairs: Object.<string, VotingPair>,
- *   voted: Object.<string, VotingPair>,
- * }} ProfileItem
- */
-
-/**
- * This gives every combination between `item` and `list` (excluding itself).
- * The result is n!/r!(n-r)!.
- *
- * @param {[string, ComparisonItem]} param0
- * @param {Object.<string, ProcessedComparisonItem>} list
- * @param {Object.<string, ProcessedComparisonItem>} result
- * @return {[VotingPair]}
- */
-const createPairs = ([key, item], list, result) => Object.entries(list)
-  .reduce((pairMap, [secondKey, secondItem]) => {
-    const pairKey = `${key}${secondKey}`;
-    const invertedPairKey = `${secondKey}${key}`;
-    if (key !== secondKey && !result[invertedPairKey]) {
-      pairMap[pairKey] = {
-        left: item,
-        right: secondItem,
-        winner: null,
-        skipped: 0
-      };
-    }
-    return pairMap;
-  }, {});
-
-/**
- * This gives every combination between all items in `list`
- * but not against themselves & disregarding order.
- * The result is  n!/r!(n-r)!.
- *
- * @param {Object.<string, ProcessedComparisonItem>} list
- * @return {[VotingPair]}
- */
-const createPairMap = list => Object.entries(list).reduce(
-  (result, item) => ({ ...result, ...createPairs(item, list, result) }),
-  {}
-);
-
-/**
- * Removes all duplicates based on the name. Adds score + id.
- *
- * @param {[ComparisonItem]} list
- * @return {Object.<string, ProcessedComparisonItem>}
- */
-const uniqueByName = list => list.reduce((nameMap, item) => {
-  const id = '_' + item.name;
-  nameMap[id] = {
-    ...item,
-    id,
-    score: 0,
-  };
-  return nameMap;
-}, {});
 
 /////////////////////////////////////////////////////////////////////////
 // Actions
@@ -112,7 +22,7 @@ export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
 /**
  *
  * @param {string} name
- * @param {[ComparisonItem]} list
+ * @param {[ComparisonRow]} list
  */
 export const addProfile = (name, list) => ({
   type: PROFILE_ADD,
@@ -170,7 +80,7 @@ export const getVotedEntries = createSelector(
 );
 
 /**
- * @return {[ProcessedComparisonItem]}
+ * @return {[ComparisonCandidate]}
  */
 export const getListValues = createSelector(
   getCurrentProfile,
@@ -238,7 +148,7 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case PROFILE_ADD:
-      const nameMap = uniqueByName(action.data.list);
+      const nameMap = createNameMap(action.data.list);
       let newProfileId = generateNewKey(action.data.name);
       let safetyCheck = 100;
 
@@ -295,4 +205,3 @@ export function ProfileProvider(props) {
     </ProfileContext.Provider>
   );
 }
-
