@@ -50,7 +50,7 @@ export const setCurrentProfile = (id) => ({
  * @param {string} pairId
  * @param {string} winnerListId
  */
-export const voteWinner = (pairId, winnerListId) => ({
+export const votePair = (pairId, winnerListId) => ({
   type: PAIR_VOTE,
   data: {
     pairId,
@@ -94,7 +94,7 @@ export const getCurrentProfile = state => state.currentProfile ? ({
  */
 export const getPairEntries = createSelector(
   getCurrentProfile,
-  profile => Object.entries(profile.pairs)
+  profile => profile ? Object.entries(profile.pairs) : []
 );
 
 /**
@@ -102,7 +102,7 @@ export const getPairEntries = createSelector(
  */
 export const getListValues = createSelector(
   getCurrentProfile,
-  profile => Object.values(profile.list)
+  profile => profile ? Object.values(profile.list) : []
 );
 
 /**
@@ -121,7 +121,7 @@ export const getMaxScore = createSelector(
  */
 export const getTotalComparisons = createSelector(
   getCurrentProfile,
-  (profile) => (profile.totalComparisons || 1)
+  (profile) => (profile && profile.totalComparisons) || 1
 );
 
 /**
@@ -130,7 +130,7 @@ export const getTotalComparisons = createSelector(
 export const getProgress = createSelector(
   getPairEntries,
   getTotalComparisons,
-  (pairs, total) => total - pairs.length
+  (pairs, total) => pairs ? total - pairs.length : 0
 );
 
 

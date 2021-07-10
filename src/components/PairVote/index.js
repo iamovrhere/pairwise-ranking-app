@@ -1,3 +1,3 @@
-import PairVoteComponent from './PairVoteComponent';
+import PairVoteContainer from './PairVoteContainer';
 
-export default PairVoteComponent;
+export default PairVoteContainer;

@@ -1,15 +1,14 @@
 import React from 'react';
 import {
   goBackOrHome,
-  selectProfileRoute,
 } from 'app/routes';
 import {
   ProfileContext,
-  getCurrentProfile,
   getProgress,
-  getTotalComparisons
+  getTotalComparisons,
+  votePair,
+  skipPair
 } from 'contexts/Profile';
-import { flipCoin } from 'lib';
 import {
   OptionalButton,
   CancelButton
@@ -23,54 +22,42 @@ import {
   SkippedText,
 } from './PairVote.style';
 
-
-// TODO replace with actual code that fetches the Card info.
-/**
- * @return {{id: string, image: string | null, title: string}}
- */
-const generateCard = () => {
-  const text = 'Foobar ' + Math.round(Math.random() * 10);
-  return {
-    img: flipCoin() ? 'https://material-ui.com/static/images/cards/contemplative-reptile.jpg' : null,
-    title: text,
-    id: text,
-  };
-};
-
 /**
  * Silly easter egg.
  */
 const orClickThreshold = 20;
 
-function PairVoteComponent({ history }) {
-  // TODO move to the application state.
+/**
+ *
+ * @param {number} skipped
+ * @return {string}
+ */
+const skippedPhrase = (skipped) => (skipped === 1) ?
+  `1 time` : `${skipped} times`;
+
+function PairVoteComponent({
+  history,
+  pairId,
+  leftBallot,
+  rightBallot,
+  skippedCount,
+}) {
   const { state, dispatch } = React.useContext(ProfileContext);
-  const profile = getCurrentProfile(state);
+  console.log('PairVoteComponent', state);
+
+  const [orClickCount, setOrClickCount] = React.useState(0);
+
   const progress = getProgress(state);
   const totalComparisons = getTotalComparisons(state);
 
-  const reverseOrder = flipCoin();
-  const [orClickCount, setOrClickCount] = React.useState(0);
-  const [skippedTimes, setSkippedTimes] = React.useState(0);
-  const [ballotValues, setBallotValues] = React.useState([
-    generateCard(),
-    generateCard()
-  ]);
+  React.useEffect(() => {
+    if (progress >= totalComparisons) {
+      goBackOrHome(history);
+    }
+  }, [history, progress, totalComparisons])
 
-  if (!profile) {
-    console.warn('Whoops! No profile selected!');
-    history.replace(selectProfileRoute);
-    return null;
-  }
-
-  const skippedPhrase = skippedTimes === 1 ?
-    `1 time` : `${skippedTimes} times`;
-
-  const castTheVote = id => {
-    setBallotValues([
-      generateCard(),
-      generateCard()
-    ]);
+  const castVote = (pairId, id) => {
+    dispatch(votePair(pairId, id));
     setOrClickCount(0);
     console.log(`Voted for: ${id}`);
   };
@@ -80,9 +67,9 @@ function PairVoteComponent({ history }) {
       <LinearProgressBar value={progress} total={totalComparisons} />
       <BallotBox>
         <BallotCard
-          img={ballotValues[0].img}
-          title={ballotValues[0].title}
-          onClick={() => castTheVote(ballotValues[0].id)}
+          img={leftBallot.image}
+          title={leftBallot.name}
+          onClick={() => castVote(pairId, leftBallot.id)}
         />
         <OrText onClick={() => {
           setOrClickCount(orClickCount + 1);
@@ -93,19 +80,16 @@ function PairVoteComponent({ history }) {
           OR
         </OrText>
         <BallotCard
-          img={ballotValues[1].img}
-          title={ballotValues[1].title}
-          onClick={() => castTheVote(ballotValues[1].id)}
+          img={rightBallot.image}
+          title={rightBallot.name}
+          onClick={() => castVote(pairId, rightBallot.id)}
         />
       </BallotBox>
-      <SkippedText>Skipped: {skippedPhrase}</SkippedText>
+      <SkippedText>Skipped: {skippedPhrase(skippedCount)}</SkippedText>
       <OptionalButton
         onClick={() => {
-          setBallotValues([
-            generateCard(),
-            generateCard()
-          ]);
-          setSkippedTimes(skippedTimes + 1);
+          dispatch(skipPair(pairId));
+          console.log(`Skipped: ${pairId}`);
         }}
       >
         Skip

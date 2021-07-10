@@ -60,7 +60,6 @@ const createPairs = ([key, item], list, result) => Object.entries(list)
       pairMap[pairKey] = {
         left: item,
         right: secondItem,
-        winner: null,
         skipped: 0
       };
     }

@@ -99,17 +99,21 @@ function profileReducer(state, action, currentProfile) {
         ...newProfile
       };
     case PAIR_SKIP:
-      const skipProfile = {
-        ...state[currentProfile]
+      const skipProfile = {};
+      skipProfile[currentProfile] = {
+        ...state[currentProfile],
+        dateTime: new Date().getTime(),
+        pairs: pairReducer(state[currentProfile].pairs, action, data.pairId)
       };
-      skipProfile.pairs[data.pairId].skipped++;
       return {
         ...state,
         ...skipProfile
       };
     case PAIR_VOTE:
-      const voteProfile = {
+      const voteProfile = {};
+      voteProfile[currentProfile] = {
         ...state[currentProfile],
+        dateTime: new Date().getTime(),
         list: listReducer(state[currentProfile].list, action, data.winnerListId),
         pairs: pairReducer(state[currentProfile].pairs, action, data.pairId)
       };
@@ -132,10 +136,11 @@ function listReducer(state, action, listId) {
   const { type } = action;
   switch (type) {
     case PAIR_VOTE:
-      const voteListRow = {
+      const voteListRow = {}
+      voteListRow[listId] = {
         ...state[listId],
       };
-      voteListRow.score++;
+      voteListRow[listId].score++;
       return {
         ...state,
         ...voteListRow
@@ -160,6 +165,16 @@ function pairReducer(state, action, pairId) {
       };
       delete pairNext[pairId];
       return pairNext;
+    case PAIR_SKIP:
+      const pairSkip = {};
+      pairSkip[pairId] = {
+        ...state[pairId],
+      };
+      pairSkip[pairId].skipped++;
+      return {
+        ...state,
+        ...pairSkip
+      };
     default:
       return state;
   }

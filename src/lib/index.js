@@ -16,4 +16,4 @@ export const generateNewKey = (base) =>
 /**
  * @return {boolean}
  */
-export const flipCoin = () => Math.round(Math.random() * 2) % 2 === 0;
+export const flipCoin = () => Math.floor(Math.random() * 2) % 2 === 0;
