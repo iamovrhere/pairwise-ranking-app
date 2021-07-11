@@ -1,12 +1,5 @@
 import React from 'react';
 import { createSelector } from 'reselect'
-import {
-  LIST_RESET_ROWS,
-  PAIR_SKIP,
-  PAIR_VOTE,
-  PROFILE_ADD,
-  PROFILE_SET_CURRENT,
-} from './actions';
 import { reducer } from './reducers';
 
 /**
@@ -17,78 +10,6 @@ import { reducer } from './reducers';
  * @typedef {import('./reducer').ProfileState} ProfileState
  * @typedef {import('./reducer').Action} Action
  */
-
-/////////////////////////////////////////////////////////////////////////
-// Actions
-/////////////////////////////////////////////////////////////////////////
-
-
-/**
- *
- * @param {string} newProfileId
- * @param {string} name
- * @param {Object.<string, ComparisonCandidate>} nameMap
- * @param {Object.<string, VotingPair>} pairMap
- * @return {Action}
- */
-export const addProfile = (newProfileId, name, nameMap, pairMap) => ({
-  type: PROFILE_ADD,
-  data: {
-    newProfileId, name, nameMap, pairMap
-  }
-});
-
-/**
- *
- * @param {string} id
- * @return {Action}
- */
-export const setCurrentProfile = (id) => ({
-  type: PROFILE_SET_CURRENT,
-  data: {
-    id
-  }
-});
-
-/**
- *
- * @param {string} pairId
- * @param {string} winnerListId
- * @return {Action}
- */
-export const votePair = (pairId, winnerListId) => ({
-  type: PAIR_VOTE,
-  data: {
-    pairId,
-    winnerListId
-  }
-});
-
-/**
- *
- * @param {string} pairId
- * @return {Action}
- */
-export const skipPair = (pairId) => ({
-  type: PAIR_SKIP,
-  data: {
-    pairId
-  }
-});
-
-/**
- *
- * @param {[string]} listIds
- * @param {Object.<string, ComparisonCandidate>} nameMap
- * @param {Object.<string, VotingPair>} pairMap
- * @return {Action}
- */
-export const resetListRows = (nameMap, pairMap) => ({
-  type: LIST_RESET_ROWS,
-  data: {
-    nameMap, pairMap
-  }
-});
 
 /////////////////////////////////////////////////////////////////////////
 // Selectors
@@ -111,11 +32,11 @@ export const getCurrentProfile = state => state.currentProfile ? ({
 }) : null;
 
 /**
- * @return {[[string, VotingPair]]} Array of key + VotingPairs.
+ * @return {[VotingPair]} Array of VotingPairs.
  */
-export const getPairEntries = createSelector(
+export const getPairs = createSelector(
   getCurrentProfile,
-  profile => profile ? Object.entries(profile.pairs) : []
+  profile => profile ? profile.pairs : []
 );
 
 /**
@@ -149,7 +70,7 @@ export const getTotalComparisons = createSelector(
  * @return {number}
  */
 export const getProgress = createSelector(
-  getPairEntries,
+  getPairs,
   getTotalComparisons,
   (pairs, total) => pairs ? total - pairs.length : 0
 );

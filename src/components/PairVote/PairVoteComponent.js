@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-  goBackOrHome,
-} from 'app/routes';
-import {
-  ProfileContext,
-  votePair,
-  skipPair
-} from 'contexts/Profile';
+import { goBackOrHome } from 'app/routes';
+import { ProfileContext } from 'contexts/Profile';
+import { votePair, skipPair } from 'contexts/Profile/actions';
 import {
   OptionalButton,
   CancelButton

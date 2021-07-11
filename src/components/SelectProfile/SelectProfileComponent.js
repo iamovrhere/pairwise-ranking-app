@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import {
   ProfileContext,
   getProfiles,
-  setCurrentProfile
 } from 'contexts/Profile';
+import { setCurrentProfile } from 'contexts/Profile/actions';
 import {
   GetStartedMessage,
   ListContainer,

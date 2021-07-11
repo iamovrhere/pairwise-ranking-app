@@ -84,8 +84,8 @@ function profileReducer(state, action, currentProfile) {
         name: data.name,
         list: data.nameMap,
         dateTime: new Date().getTime(),
-        pairs: data.pairMap,
-        totalComparisons: Object.values(data.pairMap).length
+        pairs: data.pairList,
+        totalComparisons: data.pairList.length
       };
 
       return {
@@ -97,7 +97,7 @@ function profileReducer(state, action, currentProfile) {
       skipProfile[currentProfile] = {
         ...state[currentProfile],
         dateTime: new Date().getTime(),
-        pairs: pairReducer(state[currentProfile].pairs, action, data.pairId)
+        pairs: pairReducer(state[currentProfile].pairs, action, data.pairIndex)
       };
       return {
         ...state,
@@ -109,7 +109,7 @@ function profileReducer(state, action, currentProfile) {
         ...state[currentProfile],
         dateTime: new Date().getTime(),
         list: listReducer(state[currentProfile].list, action, data.winnerListId),
-        pairs: pairReducer(state[currentProfile].pairs, action, data.pairId)
+        pairs: pairReducer(state[currentProfile].pairs, action, data.pairIndex)
       };
       return {
         ...state,
@@ -124,10 +124,9 @@ function profileReducer(state, action, currentProfile) {
           ...state[currentProfile].list,
           ...data.nameMap
         },
-        pairs: {
-          ...state[currentProfile].pairs,
-          ...data.pairMap
-        }
+        pairs: [
+          ...data.pairList
+        ]
       };
       return {
         ...state,
@@ -166,27 +165,23 @@ function listReducer(state, action, listId) {
  *
  * @param {Object.<string, VotingPair>} state
  * @param {Action} action
- * @param {string} pairId
+ * @param {string} pairIndex
  */
-function pairReducer(state, action, pairId) {
+function pairReducer(state, action, pairIndex) {
   const { type } = action;
   switch (type) {
     case PAIR_VOTE:
-      const pairNext = {
+      const pairNext = [
         ...state,
-      };
-      delete pairNext[pairId];
+      ];
+      pairNext.splice(pairIndex, 1);
       return pairNext;
     case PAIR_SKIP:
-      const pairSkip = {};
-      pairSkip[pairId] = {
-        ...state[pairId],
-      };
-      pairSkip[pairId].skipped++;
-      return {
+      const pairSkip = [
         ...state,
-        ...pairSkip
-      };
+      ];
+      pairSkip[pairIndex].skipped++;
+      return pairSkip;
     default:
       return state;
   }

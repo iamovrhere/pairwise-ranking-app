@@ -1,6 +1,7 @@
-import { addProfile, resetListRows, getCurrentProfile } from 'contexts/Profile';
+import { getCurrentProfile } from 'contexts/Profile';
+import { addProfile, resetListRows } from 'contexts/Profile/actions';
 import { generateNewKey } from 'lib';
-import { createNameMap, createPairMap, resetPairMap } from './ProfileStructure';
+import { createNameMap, createPairList, resetPairList } from './ProfileStructure';
 
 /**
  * @typedef {import('./ProfileStructure').ComparisonRow} ComparisonRow
@@ -27,7 +28,6 @@ export const asyncCreateProfile = async (context, name, listText) => {
     const [name, image] = row.split(SEPARATOR);
     return { name, image };
   }).filter(({ name, image }) => name || image);
-  console.log(list);
 
   let newProfileId = generateNewKey(name);
   let safetyCheck = 100;
@@ -43,8 +43,9 @@ export const asyncCreateProfile = async (context, name, listText) => {
   }
 
   const nameMap = createNameMap(list);
-  const pairMap = createPairMap(nameMap);
-  dispatch(addProfile(newProfileId, name, nameMap, pairMap));
+  const pairList = createPairList(nameMap);
+  console.log(nameMap, pairList);
+  dispatch(addProfile(newProfileId, name, nameMap, pairList));
 };
 
 /**
@@ -63,7 +64,7 @@ export const asyncResetListRows = async (context, listIds) => {
     map[id] = resetItem;
     return map;
   }, {});
-  const pairMap = resetPairMap(nameMap, profile.list);
-
-  dispatch(resetListRows(nameMap, pairMap));
+  const pairList = resetPairList(nameMap, profile.list);
+  console.log(nameMap, pairList);
+  dispatch(resetListRows(nameMap, pairList));
 };
