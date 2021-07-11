@@ -1,5 +1,5 @@
 # Pairwise Ranking Web App
-[<img src="./public/favicon.ico?raw=true&sanitize=true" height="45" width="45"/>  Click here to see a demo.](https://iamovrhere.github.io/pairwise-ranking-app/) **_(Incomplete)_**
+[<img src="./public/favicon.ico?raw=true&sanitize=true" height="45" width="45"/>  Click here to see a demo.](https://iamovrhere.github.io/pairwise-ranking-app/)
 
 Icon modified from [OpenMoji Project (author Marius Schnabel)]( https://openmoji.org/library/#search=pear&emoji=1F350).
 
@@ -55,7 +55,14 @@ The page will reload if you make edits. You will also see any lint errors in the
 #####  Error: `System limit for number of file watchers reached`
 
 ```bash
-Internal watch failed: ENOSPC: System limit for number of file watchers reached, watch '/media/rehan-sattar/Development/All projects/GrpahQl/graph-ql-course/graphql-prisma/src/generated
+Internal watch failed: ENOSPC: System limit for number of file Error: ENOSPC: System limit for number of file watchers reached, watch '/path/path/path/repos/pairwise-ranking-app/public'
+...
+errno: -28,
+syscall: 'watch',
+code: 'ENOSPC',
+path: '/path/path/path/repos/pairwise-ranking-app/public',
+filename: '/path/path/path/repos/pairwise-ranking-app/public'
+}
 ```
 
 Sometimes happens on linux (in general) for Node scripts of this nature, Either:
@@ -110,6 +117,7 @@ To demo/use here:
 
 - [x] Style out the build info
 - [x] Set material UI colour theme
+- [x] Perhaps either setup some backend (meeeh) or an export/import ranking.
 - [ ] RESPONSIVE - Tinker with the mobile/tablet/desktop profiles
     - I will likely most use this with tablet/mobile.
 - [ ] Convert into TypeScript
@@ -117,7 +125,6 @@ To demo/use here:
 - [ ] Tests for contexts/reducers
 - [ ] Router Transitions http://maisano.github.io/react-router-transition/getting-started / https://www.npmjs.com/package/react-router-transition / https://reactrouter.com/web/example/animated-transitions
 - [ ] TRANSLATIONS - Add translations (probably last since this is primary for my use)
-- [ ] Perhaps either setup some backend (meeeh) or an export/import ranking.
 
 Below this is stock README
 ---
