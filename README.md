@@ -18,13 +18,14 @@ This is intended as a simple web app to aggregate a preference list from input (
   <summary>Click to expand/collapse</summary>
 
 Overview of app:
-![Start page](./screenshots/screenshot_0_create_profile.png)
-![Edit Page](./screenshots/screenshot_1_edit_profile.png)
-![View Results](./screenshots/screenshot_2_view_profile.png)
-![Vote on pair](./screenshots/screenshot_3_vote_pair.png)
-![Vote on pair (mobile)](./screenshots/screenshot_4_vote_pair_mobile.png)
-![Export table to CSV](./screenshots/screenshot_5_export_csv.png)
-![Select multiple profile](./screenshots/screenshot_6_select_profiles.png)
+
+<img src="./screenshots/screenshot_0_create_profile.png" height="50%" width="50%" alt="Start page" />
+<img src="./screenshots/screenshot_1_edit_profile.png" height="50%" width="50%" alt="Edit Page" />
+<img src="./screenshots/screenshot_2_view_profile.png" height="50%" width="50%" alt="View Results" />
+<img src="./screenshots/screenshot_3_vote_pair.png" height="50%" width="50%" alt="Vote on pair" />
+<img src="./screenshots/screenshot_4_vote_pair_mobile.png" height="50%" width="50%" alt="Vote on pair (mobile)" />
+<img src="./screenshots/screenshot_5_export_csv.png" height="50%" width="50%" alt="Export table to CSV" />
+<img src="./screenshots/screenshot_6_select_profiles.png" height="50%" width="50%" alt="Select multiple profile" />
 
 </details>
 
