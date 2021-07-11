@@ -117,22 +117,25 @@ export function ProfileProvider(props) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const [storageState, setStorageState] = useLocalStorage(localStorageKey, initialState);
 
+  const storedProfile = getCurrentProfile(storageState);
+  const isStateEmpty = !getCurrentProfile(state) && storedProfile;
   const storedUpdatedAt = getUpdatedAtTime(storageState);
   const currentUpdatedAt = getUpdatedAtTime(state);
   const isStoredStale = storedUpdatedAt < currentUpdatedAt;
 
   React.useEffect(() => {
-    const currentProfile = getCurrentProfile(state);
-    const storedProfile = getCurrentProfile(storageState);
-    if (!currentProfile && storedProfile) {
+    if (isStateEmpty) {
       dispatch(restoreProfileState(storageState));
     }
-  }, [dispatch, state, storageState]);
+  }, [dispatch, isStateEmpty, storageState]);
 
   React.useEffect(() => {
     const currentProfile = getCurrentProfile(state);
     if (!storedUpdatedAt || (currentProfile && isStoredStale)) {
-      setStorageState(state);
+      const asyncSetStorage = async () => {
+        setStorageState(state);
+      };
+      asyncSetStorage();
     }
   }, [state, storedUpdatedAt, isStoredStale, setStorageState]);
 

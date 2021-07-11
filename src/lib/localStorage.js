@@ -18,13 +18,15 @@ export const useLocalStorage = (key, initialValue) => {
     }
   };
 
-  valueCache[key] = getValue();
+  if (!valueCache[key]) {
+    valueCache[key] = getValue();
+  }
 
   const setValue = (value) => {
     try {
       const valueString = JSON.stringify(value);
       window.localStorage.setItem(key, valueString);
-      valueCache[key] = getValue();
+      valueCache[key] = value;
     } catch (error) {
       console.error('Failed to store value!', error);
     }
