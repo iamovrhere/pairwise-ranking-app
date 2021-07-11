@@ -1,5 +1,5 @@
 # Pairwise Ranking Web App
-[<img src="./public/favicon.ico?raw=true&sanitize=true" height="45" width="45"/>  Click here to see a demo.](https://iamovrhere.github.io/pairwise-ranking-app/)
+[<img src="./public/favicon.ico?raw=true&sanitize=true" height="45" width="45"/>  Click here to see a demo.](https://iamovrhere.github.io/pairwise-ranking-app/) (localStorage doesn't work on large sets yet)
 
 Icon modified from [OpenMoji Project (author Marius Schnabel)]( https://openmoji.org/library/#search=pear&emoji=1F350).
 
@@ -14,9 +14,23 @@ This is intended as a simple web app to aggregate a preference list from input (
 
 ## Screenshots
 
+<details open>
+  <summary>Click to expand/collapse</summary>
+
+Overview of app:
+![Start page](./screenshots/screenshot_0_create_profile.png)
+![Edit Page](./screenshots/screenshot_1_edit_profile.png)
+![View Results](./screenshots/screenshot_2_view_profile.png)
+![Vote on pair](./screenshots/screenshot_3_vote_pair.png)
+![Vote on pair (mobile)](./screenshots/screenshot_4_vote_pair_mobile.png)
+![Export table to CSV](./screenshots/screenshot_5_export_csv.png)
+![Select multiple profile](./screenshots/screenshot_6_select_profiles.png)
+
+</details>
+
 ### Planning
 
-<details open>
+<details close>
   <summary>Click to expand/collapse</summary>
 
 Quick 30 second wire-frames for direction:
@@ -26,7 +40,6 @@ Quick 30 second wire-frames for direction:
 Screen 3 does need some refinement of when/where to have buttons.
 
 </details>
-
 
 ## Requirements
 
@@ -117,7 +130,8 @@ To demo/use here:
 
 - [x] Style out the build info
 - [x] Set material UI colour theme
-- [x] Perhaps either setup some backend (meeeh) or an export/import ranking.
+- [ ] Perhaps either setup some backend (meeeh) or an export/import ranking.
+- [ ] Replace localStorage with IndexDB - https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
 - [ ] RESPONSIVE - Tinker with the mobile/tablet/desktop profiles
     - I will likely most use this with tablet/mobile.
 - [ ] Convert into TypeScript
