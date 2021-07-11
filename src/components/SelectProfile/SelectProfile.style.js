@@ -49,7 +49,7 @@ export const GetStartedMessage = styled(Paper).attrs({
   border-radius: 1rem;
 `;
 
-export const ListItemSecondaryText = styled.div`
+export const ListItemSpaceBetweenText = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between

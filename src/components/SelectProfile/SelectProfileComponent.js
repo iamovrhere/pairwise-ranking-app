@@ -8,7 +8,7 @@ import { setCurrentProfile } from 'contexts/Profile/actions';
 import {
   GetStartedMessage,
   ListContainer,
-  ListItemSecondaryText,
+  ListItemSpaceBetweenText,
   useListStyles,
 } from './SelectProfile.style';
 import {
@@ -26,20 +26,25 @@ import {
 } from 'components/common/common.style';
 
 function RowComponent(props) {
-  const { id, name, dateTime, progress, totalComparisons, onClick } = props;
+  const { id, name, dateTime, listLength, progress, totalComparisons, onClick } = props;
 
   return (
     <ListItem button key={id} onClick={onClick}>
       <ListItemText
-        primary={name}
+        primary={<ListItemSpaceBetweenText>
+          <span>{name}</span>
+          <span>{
+            `    ${Math.round(progress / totalComparisons * 100)}%`
+          }</span>
+        </ListItemSpaceBetweenText>}
         secondary={
-          <ListItemSecondaryText>
+          <ListItemSpaceBetweenText>
             <span>{
-              `${progress}/${totalComparisons} ` +
-              `(${Math.round(progress / totalComparisons * 100)}%)`
+              `${listLength} rows ` +
+              `(${progress}/${totalComparisons})`
             }</span>
             <span>{new Date(dateTime).toLocaleString()}</span>
-          </ListItemSecondaryText>
+          </ListItemSpaceBetweenText>
         }
 
       >
@@ -52,6 +57,7 @@ RowComponent.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   dateTime: PropTypes.number.isRequired,
+  listLength: PropTypes.number.isRequired,
   progress: PropTypes.number.isRequired,
   totalComparisons: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired,
@@ -71,8 +77,9 @@ function SelectProfileComponent({ history }) {
             (
               <List className={classes.root}>
                 {
-                  profiles.map(({ name, id, dateTime, pairs, totalComparisons }) => {
-                    const progress = totalComparisons - Object.keys(pairs).length;
+                  profiles.map(({ name, id, dateTime, list, pairs, totalComparisons }) => {
+                    const listLength = Object.values(list).length;
+                    const progress = totalComparisons - pairs.length;
                     return (
                       <RowComponent
                         key={id}
@@ -80,6 +87,7 @@ function SelectProfileComponent({ history }) {
                         name={name}
                         dateTime={dateTime}
                         progress={progress}
+                        listLength={listLength}
                         totalComparisons={totalComparisons}
                         onClick={() => {
                           dispatch(setCurrentProfile(id));
