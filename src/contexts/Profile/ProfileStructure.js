@@ -23,6 +23,7 @@
  *
  * @typedef {{
  *  id: string,
+ *  rid: string,
  *  left: ComparisonCandidate,
  *  right: ComparisonCandidate,
  *  skipped: number,
@@ -31,7 +32,8 @@
 
 /**
 * Profile items as they appear in the profiles map.
-* Where the `pairs` are "to be voted".
+* Where the `pairs` are "to be voted". Performance works best
+* as an array for the pairs.
 *
 * @typedef {{
  *   id: string,
@@ -55,6 +57,7 @@ const createPairs = (firstEntry, list) => {
   const [firstKey, firstItem] = firstEntry;
   return list.map(([secondKey, secondItem]) => ({
     id: `${firstKey}${secondKey}`,
+    rid: `${secondKey}${firstKey}`,
     left: firstItem,
     right: secondItem,
     skipped: 0

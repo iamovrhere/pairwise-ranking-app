@@ -137,20 +137,11 @@ function profileReducer(state, action, currentProfile) {
       };
     case LIST_RESET_ROWS:
       const resetRowsProfile = {};
-      const resetPairs = [
-        ...state[currentProfile].pairs,
-        ...data.pairList
-      ]
       resetRowsProfile[currentProfile] = {
         ...state[currentProfile],
         dateTime: new Date().getTime(),
-        list: {
-          ...state[currentProfile].list,
-          ...data.nameMap
-        },
-        pairs: resetPairs.filter((pair, index) => (
-          resetPairs.findIndex(pairCheck => pairCheck.id === pair.id) === index
-        ))
+        list: listReducer(state[currentProfile].list, action),
+        pairs: pairReducer(state[currentProfile].pairs, action)
       };
       return {
         ...state,
@@ -165,11 +156,16 @@ function profileReducer(state, action, currentProfile) {
  *
  * @param {Object.<string, ComparisonCandidate>} state
  * @param {Action} action
- * @param {string} listId
+ * @param {string|null} listId
  */
-function listReducer(state, action, listId) {
-  const { type } = action;
+function listReducer(state, action, listId = null) {
+  const { type, data } = action;
   switch (type) {
+    case LIST_RESET_ROWS:
+      return {
+        ...state,
+        ...data.nameMap
+      }
     case PAIR_VOTE:
       const voteListRow = {}
       voteListRow[listId] = {
@@ -187,13 +183,24 @@ function listReducer(state, action, listId) {
 
 /**
  *
- * @param {Object.<string, VotingPair>} state
+ * @param {[VotingPair]} state
  * @param {Action} action
- * @param {string} pairIndex
+ * @param {string|null} pairIndex
  */
-function pairReducer(state, action, pairIndex) {
-  const { type } = action;
+function pairReducer(state, action, pairIndex = null) {
+  const { type, data } = action;
   switch (type) {
+    case LIST_RESET_ROWS:
+      const resetPairs = [
+        // Merge new data first as we'll be filtering array, first entry wins.
+        ...data.pairList,
+        ...state,
+      ];
+      return resetPairs.filter((pair, index) => (
+        resetPairs.findIndex(
+          pairCheck => pairCheck.id === pair.id || pairCheck.rid === pair.id
+        ) === index
+      ));
     case PAIR_VOTE:
       const pairNext = [
         ...state,
