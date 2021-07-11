@@ -12,11 +12,12 @@ import { breakPoint } from 'components/common/common.style'
 const imgHeight = 250;
 const imgHeightMobile = 175;
 const minHeight = imgHeight + 80;
+const maxWidth = imgHeight + 150;
 const minHeightMobile = imgHeightMobile + 40;
 const BallotCard = styled(Card)`
   display: flex;
   min-height: ${minHeight}px;
-  min-width: ${minHeight}px;
+  width: ${maxWidth}px;
   border-radius: .5rem;
 
   h2 {
@@ -27,11 +28,14 @@ const BallotCard = styled(Card)`
   ${breakPoint.mediumAndSmaller} {
     min-height: ${minHeightMobile}px;
     min-width: ${minHeightMobile}px;
+    width: 90%;
   }
 `;
 
 const BallotCardMedia = styled(CardMedia)`
-  height: ${imgHeight}px;
+  object-fit: scale-down;
+  max-height: ${imgHeight}px;
+
   ${breakPoint.mediumAndSmaller} {
     height: ${imgHeightMobile}px;
   }
