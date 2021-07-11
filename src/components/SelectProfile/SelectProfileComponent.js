@@ -62,7 +62,7 @@ function SelectProfileComponent({ history }) {
   const profiles = getProfiles(state);
   const classes = useListStyles();
 
-  const emptyList = `Create a profile to get started (no local storage yet)`;
+  const emptyList = `Create a profile to get started`;
   return (
     <>
       <ListContainer>

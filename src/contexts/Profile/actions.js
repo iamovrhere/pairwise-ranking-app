@@ -1,15 +1,35 @@
 export const PROFILE_ADD = 'PROFILE/ADD';
 export const PROFILE_SET_CURRENT = 'PROFILE/SET_CURRENT';
+export const PROFILE_RESTORE_STATE = 'PROFILE/RESTORE_STATE';
 export const PAIR_VOTE = 'PROFILE/PAIR/WINNER'
 export const PAIR_SKIP = 'PROFILE/PAIR/SKIP'
 export const LIST_EDIT = 'PROFILE/LIST/EDIT';
 export const LIST_RESET_ROWS = 'PROFILE/LIST/RESET_ROWS';
 
+/**
+ * @typedef {import('./ProfileStructure').ComparisonRow} ComparisonRow
+ * @typedef {import('./ProfileStructure').ComparisonCandidate} ComparisonCandidate
+ * @typedef {import('./ProfileStructure').ProfileItem} ProfileItem
+ * @typedef {import('./ProfileStructure').VotingPair} VotingPair
+ * @typedef {import('./reducers').ProfileState} ProfileState
+ * @typedef {import('./reducers').Action} Action
+ */
 
 /////////////////////////////////////////////////////////////////////////
 // Actions
 /////////////////////////////////////////////////////////////////////////
 
+/**
+ *
+ * @param {ProfileState} profileState
+ * @return {Action}
+ */
+export const restoreProfileState = (profileState) => ({
+  type: PROFILE_RESTORE_STATE,
+  data: {
+    profileState
+  }
+});
 
 /**
  *

@@ -25,7 +25,7 @@ function PairVoteContainer(props) {
 
   const [pairIndex, setPairIndex] = React.useState(null);
   const [pair, setPair] = React.useState(null);
-  const reverseOrder = flipCoin();
+  const [reverseOrder, setReverseOrder] = React.useState(false);
 
   const voteQueue = getPairs(state);
   const progress = getProgress(state);
@@ -41,6 +41,7 @@ function PairVoteContainer(props) {
     const { nextIndex, nextPair } = randomNextPair(voteQueue);
     setPairIndex(nextIndex);
     setPair(nextPair);
+    setReverseOrder(flipCoin());
   }, [voteQueue]);
 
 

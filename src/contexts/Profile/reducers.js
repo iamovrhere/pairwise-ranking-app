@@ -3,6 +3,7 @@ import {
   PAIR_SKIP,
   PAIR_VOTE,
   PROFILE_ADD,
+  PROFILE_RESTORE_STATE,
   PROFILE_SET_CURRENT,
 } from './actions';
 
@@ -24,6 +25,7 @@ import {
  *
  * @typedef {{
  * currentProfile: string | null,
+ * updatedAtTime: number | null,
  * profiles: Object.<string, ProfileItem>
  * }} ProfileState
  */
@@ -35,6 +37,26 @@ import {
  * @return {ProfileState}
  */
 export function reducer(state, action) {
+  switch (action.type) {
+    case PROFILE_RESTORE_STATE:
+      return {
+        ...state,
+        ...action.data.profileState
+      };
+    default:
+      return {
+        ...rootReducer(state, action),
+        updatedAtTime: new Date().getTime()
+      };
+  }
+}
+/**
+ *
+ * @param {ProfileState} state
+ * @param {Action} action
+ * @return {ProfileState}
+ */
+function rootReducer(state, action) {
   const { type, data } = action;
   switch (type) {
     case PROFILE_SET_CURRENT:
