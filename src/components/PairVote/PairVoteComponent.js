@@ -4,8 +4,6 @@ import {
 } from 'app/routes';
 import {
   ProfileContext,
-  getProgress,
-  getTotalComparisons,
   votePair,
   skipPair
 } from 'contexts/Profile';
@@ -37,69 +35,63 @@ const skippedPhrase = (skipped) => (skipped === 1) ?
 
 function PairVoteComponent({
   history,
-  pairId,
+  pairIndex,
   leftBallot,
   rightBallot,
   skippedCount,
+  progress,
+  totalComparisons
 }) {
-  const { state, dispatch } = React.useContext(ProfileContext);
-  console.log('PairVoteComponent', state);
+  const { dispatch } = React.useContext(ProfileContext);
 
   const [orClickCount, setOrClickCount] = React.useState(0);
 
-  const progress = getProgress(state);
-  const totalComparisons = getTotalComparisons(state);
-
-  React.useEffect(() => {
-    if (progress >= totalComparisons) {
-      goBackOrHome(history);
-    }
-  }, [history, progress, totalComparisons])
-
-  const castVote = (pairId, id) => {
-    dispatch(votePair(pairId, id));
+  const castVote = (pairIndex, id) => {
+    dispatch(votePair(pairIndex, id));
     setOrClickCount(0);
     console.log(`Voted for: ${id}`);
   };
 
   return (
-    <PairContainer>
-      <LinearProgressBar value={progress} total={totalComparisons} />
-      <BallotBox>
-        <BallotCard
-          img={leftBallot.image}
-          title={leftBallot.name}
-          onClick={() => castVote(pairId, leftBallot.id)}
-        />
-        <OrText onClick={() => {
-          setOrClickCount(orClickCount + 1);
-          if (orClickCount && orClickCount % orClickThreshold === 0) {
-            alert(`You chose "OR", very funny!`);
-          }
-        }}>
-          OR
+    leftBallot && rightBallot ?
+      <PairContainer>
+        <LinearProgressBar value={progress} total={totalComparisons} />
+        <BallotBox>
+          <BallotCard
+            img={leftBallot.image}
+            title={leftBallot.name}
+            onClick={() => castVote(pairIndex, leftBallot.id)}
+          />
+          <OrText onClick={() => {
+            setOrClickCount(orClickCount + 1);
+            if (orClickCount && orClickCount % orClickThreshold === 0) {
+              alert(`You chose "OR", very funny!`);
+            }
+          }}>
+            OR
         </OrText>
-        <BallotCard
-          img={rightBallot.image}
-          title={rightBallot.name}
-          onClick={() => castVote(pairId, rightBallot.id)}
-        />
-      </BallotBox>
-      <SkippedText>Skipped: {skippedPhrase(skippedCount)}</SkippedText>
-      <OptionalButton
-        onClick={() => {
-          dispatch(skipPair(pairId));
-          console.log(`Skipped: ${pairId}`);
-        }}
-      >
-        Skip
+          <BallotCard
+            img={rightBallot.image}
+            title={rightBallot.name}
+            onClick={() => castVote(pairIndex, rightBallot.id)}
+          />
+        </BallotBox>
+        <SkippedText>Skipped: {skippedPhrase(skippedCount)}</SkippedText>
+        <OptionalButton
+          onClick={() => {
+            dispatch(skipPair(pairIndex));
+            console.log(`Skipped: ${rightBallot.id} vs. ${leftBallot.id}`);
+          }}
+        >
+          Skip
       </OptionalButton>
-      <CancelButton
-        onClick={() => goBackOrHome(history)}
-      >
-        Back
+        <CancelButton
+          onClick={() => goBackOrHome(history)}
+        >
+          Back
       </CancelButton>
-    </PairContainer>
+      </PairContainer> :
+      null
   );
 }
 
