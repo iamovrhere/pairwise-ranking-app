@@ -6,10 +6,8 @@ import {
 import {
   EmojiObjectsOutlined as LightBulbOutlinedIcon,
 } from '@material-ui/icons';
-import {
-  ProfileContext,
-  addProfile
-} from 'contexts/Profile';
+import { ProfileContext } from 'contexts/Profile';
+import { asyncCreateProfile } from 'contexts/Profile/middleware';
 import { viewProfileList, goBackOrHome } from 'app/routes';
 import {
   PrimaryButton,
@@ -22,7 +20,6 @@ import {
   ProfileName,
 } from './EditProfile.style';
 
-
 const SAMPLE_TITLE = 'Apples & Oranges';
 const SAMPLE_DATA = `Honey Crisp    https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Honeycrisp.jpg/600px-Honeycrisp.jpg
 Tangerine     https://upload.wikimedia.org/wikipedia/commons/2/2a/TangerineFruit.jpg
@@ -32,12 +29,9 @@ Ambrosia     https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Ambrosia_
 Golden Delicious    https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Golden_delicious_apple.jpg/800px-Golden_delicious_apple.jpg
 
 `;
-// 4 spaces, because tabs are difficult in browsers.
-const SEPARATOR = '    ';
 
 function EditProfileComponent({ history }) {
-  // TODO provide means to edit a list.
-  const { dispatch } = React.useContext(ProfileContext);
+  const context = React.useContext(ProfileContext);
   const [titleText, setTitleText] = React.useState('');
   const [listText, setListText] = React.useState('');
 
@@ -112,15 +106,9 @@ function EditProfileComponent({ history }) {
       </CancelButton>
       <PrimaryButton
         onClick={() => {
-          const list = listText.split('\n').map((row) => {
-            const [name, image] = row.split(SEPARATOR);
-            return { name, image };
-          }).filter(({ name, image }) => name || image);
-          console.log(list);
-          // TODO actual profile.
-          dispatch(addProfile(titleText, list));
-          // TODO push to next.
-          history.push(viewProfileList);
+          // TODO add spinner.
+          asyncCreateProfile(context, titleText, listText)
+            .then(() => history.push(viewProfileList));
         }}
         disabled={!listText.trim() || !titleText.trim()}
       >

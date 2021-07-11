@@ -1,11 +1,10 @@
 import {
+  LIST_RESET_ROWS,
+  PAIR_SKIP,
+  PAIR_VOTE,
   PROFILE_ADD,
   PROFILE_SET_CURRENT,
-  PAIR_VOTE,
-  PAIR_SKIP
 } from './actions';
-import { generateNewKey } from 'lib';
-import { createNameMap, createPairMap } from './ProfileStructure';
 
 /**
  * @typedef {import('./ProfileStructure').ComparisonRow} ComparisonRow
@@ -14,7 +13,6 @@ import { createNameMap, createPairMap } from './ProfileStructure';
  * @typedef {import('./ProfileStructure').VotingPair} VotingPair
  */
 
-
 /**
  * React reducer action.
  * @typedef {{
@@ -22,6 +20,16 @@ import { createNameMap, createPairMap } from './ProfileStructure';
  * }} Action
  */
 
+/**
+ *
+ * @typedef {{
+ * currentProfile: string | null,
+ * profiles: Object.<string, ProfileItem>
+ * }} ProfileState
+ */
+
+// TODO purify reducers - I'm doing too much work in these; they should
+// be pure functions (data in, minimal transformation).
 /**
  *
  * @param {ProfileState} state
@@ -41,24 +49,12 @@ export function reducer(state, action) {
         currentProfile: currentProfileId
       };
     case PROFILE_ADD:
-      let newProfileId = generateNewKey(data.name);
-      let safetyCheck = 100;
-
-      // Guarantee uniqueness.
-      while (state.profiles[newProfileId]) {
-        if (safetyCheck--) {
-          newProfileId = generateNewKey(data.name);
-        } else {
-          console.error('Failed uniqueness 100 times! Play the lottery?')
-          break;
-        }
-      }
-
       return {
         ...state,
-        currentProfile: newProfileId,
-        profiles: profileReducer(state.profiles, action, newProfileId)
+        currentProfile: data.newProfileId,
+        profiles: profileReducer(state.profiles, action, data.newProfileId)
       };
+    case LIST_RESET_ROWS:
     case PAIR_SKIP:
     case PAIR_VOTE:
       if (!state.profiles[state.currentProfile]) {
@@ -83,15 +79,13 @@ function profileReducer(state, action, currentProfile) {
   const { type, data } = action;
   switch (type) {
     case PROFILE_ADD:
-      const nameMap = createNameMap(data.list);
-      const pairMap = createPairMap(nameMap);
       const newProfile = {};
       newProfile[currentProfile] = {
         name: data.name,
-        list: nameMap,
+        list: data.nameMap,
         dateTime: new Date().getTime(),
-        pairs: pairMap,
-        totalComparisons: Object.values(pairMap).length
+        pairs: data.pairMap,
+        totalComparisons: Object.values(data.pairMap).length
       };
 
       return {
@@ -120,6 +114,24 @@ function profileReducer(state, action, currentProfile) {
       return {
         ...state,
         ...voteProfile
+      };
+    case LIST_RESET_ROWS:
+      const resetRowsProfile = {};
+      resetRowsProfile[currentProfile] = {
+        ...state[currentProfile],
+        dateTime: new Date().getTime(),
+        list: {
+          ...state[currentProfile].list,
+          ...data.nameMap
+        },
+        pairs: {
+          ...state[currentProfile].pairs,
+          ...data.pairMap
+        }
+      };
+      return {
+        ...state,
+        ...resetRowsProfile
       };
     default:
       return state;

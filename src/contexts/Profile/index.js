@@ -1,10 +1,11 @@
 import React from 'react';
 import { createSelector } from 'reselect'
 import {
+  LIST_RESET_ROWS,
+  PAIR_SKIP,
+  PAIR_VOTE,
   PROFILE_ADD,
   PROFILE_SET_CURRENT,
-  PAIR_VOTE,
-  PAIR_SKIP
 } from './actions';
 import { reducer } from './reducers';
 
@@ -21,22 +22,26 @@ import { reducer } from './reducers';
 // Actions
 /////////////////////////////////////////////////////////////////////////
 
+
 /**
  *
+ * @param {string} newProfileId
  * @param {string} name
- * @param {[ComparisonRow]} list
+ * @param {Object.<string, ComparisonCandidate>} nameMap
+ * @param {Object.<string, VotingPair>} pairMap
+ * @return {Action}
  */
-export const addProfile = (name, list) => ({
+export const addProfile = (newProfileId, name, nameMap, pairMap) => ({
   type: PROFILE_ADD,
   data: {
-    name,
-    list
+    newProfileId, name, nameMap, pairMap
   }
 });
 
 /**
  *
  * @param {string} id
+ * @return {Action}
  */
 export const setCurrentProfile = (id) => ({
   type: PROFILE_SET_CURRENT,
@@ -49,6 +54,7 @@ export const setCurrentProfile = (id) => ({
  *
  * @param {string} pairId
  * @param {string} winnerListId
+ * @return {Action}
  */
 export const votePair = (pairId, winnerListId) => ({
   type: PAIR_VOTE,
@@ -61,11 +67,26 @@ export const votePair = (pairId, winnerListId) => ({
 /**
  *
  * @param {string} pairId
+ * @return {Action}
  */
 export const skipPair = (pairId) => ({
   type: PAIR_SKIP,
   data: {
     pairId
+  }
+});
+
+/**
+ *
+ * @param {[string]} listIds
+ * @param {Object.<string, ComparisonCandidate>} nameMap
+ * @param {Object.<string, VotingPair>} pairMap
+ * @return {Action}
+ */
+export const resetListRows = (nameMap, pairMap) => ({
+  type: LIST_RESET_ROWS,
+  data: {
+    nameMap, pairMap
   }
 });
 
@@ -137,11 +158,8 @@ export const getProgress = createSelector(
 /**
 * The profile state with keys for each id.
 *
-* @typedef {{
-  * currentProfile: string | null,
-  * profiles: Object.<string, ProfileItem>
-  * }} ProfileState
-  */
+* @typedef ProfileState
+*/
 const initialState = {
   currentProfile: null,
   profiles: {}
