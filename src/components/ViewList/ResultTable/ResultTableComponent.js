@@ -189,11 +189,9 @@ const EnhancedTable = (props) => {
           }}
           onExportRows={() => {
             const filtered = filterSelectedRows();
-            console.log('TODO', filtered);
             exportCsv(filtered, '\t', title);
           }}
           onClearRows={() => {
-            console.log('TODO', selected);
             onClearRows(selected);
           }}
         />

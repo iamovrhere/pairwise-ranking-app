@@ -22,10 +22,10 @@ export const exportCsv = (rows, delimiter, title) => {
       );
     }
     return row.join(delimiter);
-  }).join('\n');
+  }).join('\r\n');
 
   const hiddenElement = document.createElement('a');
-  hiddenElement.href = csvContent;
+  hiddenElement.href = encodeURI(csvContent);
   hiddenElement.target = '_blank';
 
   //provide the name for the CSV file to be downloaded
