@@ -28,8 +28,6 @@ import {
  * }} ProfileState
  */
 
-// TODO purify reducers - I'm doing too much work in these; they should
-// be pure functions (data in, minimal transformation).
 /**
  *
  * @param {ProfileState} state
@@ -117,6 +115,10 @@ function profileReducer(state, action, currentProfile) {
       };
     case LIST_RESET_ROWS:
       const resetRowsProfile = {};
+      const resetPairs = [
+        ...state[currentProfile].pairs,
+        ...data.pairList
+      ]
       resetRowsProfile[currentProfile] = {
         ...state[currentProfile],
         dateTime: new Date().getTime(),
@@ -124,9 +126,9 @@ function profileReducer(state, action, currentProfile) {
           ...state[currentProfile].list,
           ...data.nameMap
         },
-        pairs: [
-          ...data.pairList
-        ]
+        pairs: resetPairs.filter((pair, index) => (
+          resetPairs.findIndex(pairCheck => pairCheck.id === pair.id) === index
+        ))
       };
       return {
         ...state,
