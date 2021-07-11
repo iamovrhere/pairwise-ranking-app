@@ -110,6 +110,10 @@ export const ProfileContext = React.createContext();
  */
 const localStorageKey = 'pairwise-ranking-app:profiles:v0.1.0';
 
+const THRESHOLD_MS = 5000;
+const checkIfStorageStale = (storedUpdatedAt, currentUpdatedAt) =>
+  Date.now() - storedUpdatedAt > THRESHOLD_MS && currentUpdatedAt > storedUpdatedAt;
+
 /**
  * @returns {{ state: ProfileState, dispatch: (Action) => {}}}
  */
@@ -117,27 +121,32 @@ export function ProfileProvider(props) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const [storageState, setStorageState] = useLocalStorage(localStorageKey, initialState);
 
+  const [refreshTime, setRefreshTime] = React.useState(0);
+
+  const currentProfile = getCurrentProfile(state);
   const storedProfile = getCurrentProfile(storageState);
-  const isStateEmpty = !getCurrentProfile(state) && storedProfile;
+  const shouldRestoreState = !currentProfile && storedProfile;
+
   const storedUpdatedAt = getUpdatedAtTime(storageState);
   const currentUpdatedAt = getUpdatedAtTime(state);
-  const isStoredStale = storedUpdatedAt < currentUpdatedAt;
+  const isStorageStale = checkIfStorageStale(storedUpdatedAt, currentUpdatedAt);
+  const shouldSaveState = currentProfile && isStorageStale;
 
   React.useEffect(() => {
-    if (isStateEmpty) {
+    if (shouldRestoreState) {
       dispatch(restoreProfileState(storageState));
+      setInterval(() => setRefreshTime(new Date().getTime()), THRESHOLD_MS);
     }
-  }, [dispatch, isStateEmpty, storageState]);
+  }, [dispatch, setRefreshTime, shouldRestoreState, storageState]);
 
   React.useEffect(() => {
-    const currentProfile = getCurrentProfile(state);
-    if (!storedUpdatedAt || (currentProfile && isStoredStale)) {
+    if (shouldSaveState) {
       const asyncSetStorage = async () => {
         setStorageState(state);
       };
       asyncSetStorage();
     }
-  }, [state, storedUpdatedAt, isStoredStale, setStorageState]);
+  }, [state, refreshTime, shouldSaveState, setStorageState]);
 
   const value = { state, dispatch };
 
