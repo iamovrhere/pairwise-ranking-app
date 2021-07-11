@@ -7,9 +7,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import styled from 'styled-components';
+import { breakPoint } from 'components/common/common.style'
 
 const imgHeight = 250;
+const imgHeightMobile = 175;
 const minHeight = imgHeight + 80;
+const minHeightMobile = imgHeightMobile + 40;
 const BallotCard = styled(Card)`
   display: flex;
   min-height: ${minHeight}px;
@@ -19,6 +22,18 @@ const BallotCard = styled(Card)`
   h2 {
     padding: 0 1rem;
     overflow: ellipsis;
+  }
+
+  ${breakPoint.mediumAndSmaller} {
+    min-height: ${minHeightMobile}px;
+    min-width: ${minHeightMobile}px;
+  }
+`;
+
+const BallotCardMedia = styled(CardMedia)`
+  height: ${imgHeight}px;
+  ${breakPoint.mediumAndSmaller} {
+    height: ${imgHeightMobile}px;
   }
 `;
 
@@ -38,10 +53,9 @@ function BallotCardComponent({ img, title, onClick }) {
       <CardActionArea onClick={onClick}>
         {
           img &&
-          <CardMedia
+          <BallotCardMedia
             component="img"
             alt={title}
-            height={imgHeight}
             image={img}
             title={title}
           />

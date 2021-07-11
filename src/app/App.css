@@ -19,7 +19,8 @@ body {
 }
 
 .app-body {
-  min-height: 100vh;
+  min-height: 98vh;
+  padding-bottom: 2vh;
   display: flex;
   flex-direction: column;
   align-items: center;
