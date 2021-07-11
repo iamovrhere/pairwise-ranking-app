@@ -70,8 +70,7 @@ ResultTableCellComponent.propTypes = {
  *  labelId: string,
  *  isItemSelected: boolean,
  *  handleClick: Function,
- *  maxScore: number,
- *  rankRange: {start, end}
+ *  rank: string,
  * }} props
  */
 const ResultTableRowComponent = ({
@@ -80,23 +79,16 @@ const ResultTableRowComponent = ({
   labelId,
   isItemSelected,
   handleClick,
-  maxScore,
-  rankRange
+  rank,
 }) => {
-  const rankOffset = rankRange.start;
-  const rankValueRange = rankRange.end - rankRange.start;
-  const scorePercent = row.score / maxScore || 0;
-  const rank = rankValueRange * scorePercent + rankOffset;
-  const fixedDecimal = 2;
-  const rankRounded = Math.round((rank + Number.EPSILON) * 100) / 100;
   return (
     <TableRow
       hover
-      onClick={(event) => handleClick(event, row.name)}
+      onClick={(event) => handleClick(event, row.id)}
       role="checkbox"
       aria-checked={isItemSelected}
       tabIndex={-1}
-      key={row.name}
+      key={row.id}
       selected={isItemSelected}
     >
       <TableCell padding="checkbox">
@@ -107,11 +99,11 @@ const ResultTableRowComponent = ({
       </TableCell>
       {headCells.map((headCell) => (
         <ResultTableCellComponent
-          key={`${headCell.id}-${row.name}`}
+          key={`${headCell.id}-${row.id}`}
           headCell={headCell}
           row={row}
           labelId={labelId}
-          rank={rankRounded.toFixed(fixedDecimal)}
+          rank={rank}
         />
       ))}
     </TableRow>
@@ -134,11 +126,7 @@ ResultTableRowComponent.propTypes = {
   labelId: PropTypes.string.isRequired,
   isItemSelected: PropTypes.bool.isRequired,
   handleClick: PropTypes.func.isRequired,
-  maxScore: PropTypes.number.isRequired,
-  rankRange: PropTypes.shape({
-    start: PropTypes.number.isRequired,
-    end: PropTypes.number.isRequired
-  })
+  rank: PropTypes.string.isRequired,
 };
 
 export default ResultTableRowComponent;

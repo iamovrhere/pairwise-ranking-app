@@ -25,10 +25,10 @@ const useToolbarStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(1),
   },
   highlight: {
+    borderRadius: '1rem',
     color: theme.palette.secondary.main,
     backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-    // TODO reduce to 3 when COMING SOON is removed.
-    paddingLeft: theme.spacing(23),
+    paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(1),
   },
   title: {
@@ -42,18 +42,26 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 /**
  * Creates title of the table OR the toolbar when in select mode.
- * Select mode is incomplete atm.
  *
  * @param {{
   *  numSelected: number,
   *  title: string,
   *  rankRange: {start, end},
   *  onRankRangeChange: Function,
+  *  onExportRows: Function,
+  *  onClearRows: Function,
   * }} props
   */
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { title, numSelected, rankRange, onRankRangeChange } = props;
+  const {
+    title,
+    numSelected,
+    rankRange,
+    onRankRangeChange,
+    onExportRows,
+    onClearRows
+  } = props;
 
   const editButtonText = "Edit Ranges";
   const doneButtonText = "Done";
@@ -90,18 +98,13 @@ const EnhancedTableToolbar = (props) => {
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
             {numSelected} selected
           </Typography>
-          <Tooltip title="Coming soon!">
-            <IconButton aria-label="Coming soon!">
-              COMING SOON!
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Export coming soon">
-            <IconButton aria-label="Export coming soon">
+          <Tooltip title="Export rows">
+            <IconButton aria-label="Export rows" onClick={onExportRows}>
               <ImportExportIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Clear coming soon">
-            <IconButton aria-label="Clear coming soon">
+          <Tooltip title="Clear rows">
+            <IconButton aria-label="Clear rows" onClick={onClearRows}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -171,7 +174,9 @@ EnhancedTableToolbar.propTypes = {
     start: PropTypes.number.isRequired,
     end: PropTypes.number.isRequired
   }),
-  onRankRangeChange: PropTypes.func.isRequired
+  onRankRangeChange: PropTypes.func.isRequired,
+  onExportRows: PropTypes.func.isRequired,
+  onClearRows: PropTypes.func.isRequired
 };
 
 export default EnhancedTableToolbar;

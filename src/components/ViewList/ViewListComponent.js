@@ -7,6 +7,7 @@ import {
   getProgress,
   getTotalComparisons,
 } from 'contexts/Profile';
+import { asyncResetListRows } from 'contexts/Profile/middleware';
 import {
   selectProfileRoute,
   voteOnPairs
@@ -31,9 +32,9 @@ const resultsPartial = '(Partial)';
 const resultsFinal = '(Results)';
 
 function ViewListComponent({ history }) {
-  // TODO move to the application state.
-  const { state } = React.useContext(ProfileContext);
+  const { state, dispatch } = React.useContext(ProfileContext);
   const profile = getCurrentProfile(state);
+  console.log(state);
 
   if (!profile) {
     console.warn('Whoops! No profile selected!');
@@ -76,6 +77,10 @@ function ViewListComponent({ history }) {
         defaultOrder={defaultOrder}
         defaultRowCount={defaultRowCount}
         title={resultsTitle}
+        onClearRows={(listIds) => (
+          // TODO add spinner.
+          asyncResetListRows({ state, dispatch }, listIds)
+        )}
       />
       <CancelButton
         onClick={() => history.replace(selectProfileRoute)}

@@ -10,6 +10,7 @@ import {
   TableContainer,
   TablePagination,
 } from '@material-ui/core';
+import { exportCsv } from 'lib/export';
 import EnhancedTableHead from './EnhancedTableHeadComponent';
 import EnhancedTableToolbar from './EnhancedTableToolbarComponent';
 import ResultTableRow from './ResultTableRowComponent';
@@ -72,21 +73,24 @@ const rowsPerPageOptions = [10, 25, 100, 1000];
  *
  * @param {{
  *  title: string,
+ *  rows: [{id: string, name: string, image: string, score: number}]
  *  headCells: [TableData],
  *  defaultOrder: string,
  *  defaultOrderBy: string,
  *  defaultRowCount: number,
- *  maxScore: number
+ *  maxScore: number,
+ *  onClearRows: Function.
  * }} props
  */
-export default function EnhancedTable(props) {
+const EnhancedTable = (props) => {
   const {
     title,
     rows,
     defaultOrderBy,
     defaultOrder,
     defaultRowCount,
-    maxScore
+    maxScore,
+    onClearRows
   } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState(defaultOrder);
@@ -105,19 +109,19 @@ export default function EnhancedTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -141,7 +145,36 @@ export default function EnhancedTable(props) {
     setPage(0);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+
+  /**
+   * @param {number} score
+   * @return {string} The formatted rank.
+   */
+  const calculateRank = (score) => {
+    const rankOffset = rankStart;
+    const rankValueRange = rankEnd - rankStart;
+    const scorePercent = score / maxScore || 0;
+    const rank = rankValueRange * scorePercent + rankOffset;
+    const fixedDecimal = 2;
+    const rankRounded = Math.round((rank + Number.EPSILON) * 100) / 100;
+    return rankRounded.toFixed(fixedDecimal);
+  };
+
+  /**
+   * @return {[[string]]} An array of array of strings.
+   * In the order of `headerCells`, filtered with `isSelected`.
+   */
+  const filterSelectedRows = () => {
+    const header = headCells.map((column) => column.label);
+    let filteredRows = stableSort(rows, getComparator(order, orderBy))
+      .filter((value) => isSelected(value.id))
+      .map((row) => headCells.map((column) => (
+        column.id === 'rank' ? calculateRank(row.score) : row[column.id]
+      )));
+    filteredRows.unshift(header);
+    return filteredRows;
+  };
 
   return (
     <div className={classes.root}>
@@ -153,6 +186,15 @@ export default function EnhancedTable(props) {
           onRankRangeChange={({ start, end }) => {
             setRankStart(start);
             setRankEnd(end);
+          }}
+          onExportRows={() => {
+            const filtered = filterSelectedRows();
+            console.log('TODO', filtered);
+            exportCsv(filtered, '\t', title);
+          }}
+          onClearRows={() => {
+            console.log('TODO', selected);
+            onClearRows(selected);
           }}
         />
         <TableContainer className={classes.container}>
@@ -177,7 +219,7 @@ export default function EnhancedTable(props) {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -188,8 +230,7 @@ export default function EnhancedTable(props) {
                       labelId={labelId}
                       isItemSelected={isItemSelected}
                       handleClick={handleClick}
-                      maxScore={maxScore}
-                      rankRange={{ start: rankStart, end: rankEnd }}
+                      rank={calculateRank(row.score)}
                     />
                   );
                 })}
@@ -226,4 +267,7 @@ EnhancedTable.propTypes = {
   ]).isRequired,
   defaultRowCount: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
+  onClearRows: PropTypes.func.isRequired,
 };
+
+export default EnhancedTable;
