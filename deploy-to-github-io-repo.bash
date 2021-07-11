@@ -14,10 +14,10 @@ cp -r build/* $DST_DIR/
 [[ -z "$1" ]] && echo "Skipping commit" && exit || true
 
 # Tag current repo before leaving. Tagged in UTC.
-git tag -a $(date -u +"%Y%m%d") -m "$1"
+git tag -a $(date -u +"%Y%m%d-%H%M") -m "$1"
 
 cd $DST_DIR
-BRANCH="iamovrhere/${APP}-release-$(date +"%Y%m%d")"
+BRANCH="iamovrhere/${APP}-release-$(date +"%Y%m%d-%H%M")"
 git checkout $BRANCH || git checkout -b $BRANCH
 git add . && git commit -m "$1"
 
